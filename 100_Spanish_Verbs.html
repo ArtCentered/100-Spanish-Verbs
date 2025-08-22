@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Web App Meta Tags --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-title" content="Spanish Verbs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="apple-touch-icon" href="https://i.imgur.com/gT7h4v4.png"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Spanish Verb Flashcards&lt;/title&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Scripts --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Styles --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.perspective-1000 { perspective: 1000px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.transform-style-preserve-3d { transform-style: preserve-3d; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.backface-hidden { backface-visibility: hidden; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rotate-y-180 { transform: rotateY(180deg); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Prevents flashing highlight on tap in mobile browsers */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>* { -webkit-tap-highlight-color: transparent; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="overscroll-none"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="root"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script type="text/babel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const { useState, useEffect } = React;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- Icon Components (unchanged) ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const BookIcon = () =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ChevronLeftIcon = () =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ChevronRightIcon = () =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const RefreshIcon = () =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ShuffleIcon = () =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- Main App Component ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const SpanishVerbFlashcards = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const verbSets = {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>"Essential Basics": [</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "estar", english: "to be (temporary)", conjugations: ["estoy", "estás", "está", "estamos", "estáis", "están"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "tener", english: "to have", conjugations: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "hacer", english: "to do/make", conjugations: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "ir", english: "to go", conjugations: ["voy", "vas", "va", "vamos", "vais", "van"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "venir", english: "to come", conjugations: ["vengo", "vienes", "viene", "venimos", "venís", "vienen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "ver", english: "to see", conjugations: ["veo", "ves", "ve", "vemos", "veis", "ven"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "dar", english: "to give", conjugations: ["doy", "das", "da", "damos", "dais", "dan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "saber", english: "to know (facts)", conjugations: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "querer", english: "to want/love", conjugations: ["quiero", "quieres", "quiere", "queremos", "queréis", "quieren"] }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>"Common Actions": [</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "poder", english: "to be able", conjugations: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "decir", english: "to say/tell", conjugations: ["digo", "dices", "dice", "decimos", "decís", "dicen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "hablar", english: "to speak", conjugations: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "comer", english: "to eat", conjugations: ["como", "comes", "come", "comemos", "coméis", "comen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "vivir", english: "to live", conjugations: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "trabajar", english: "to work", conjugations: ["trabajo", "trabajas", "trabaja", "trabajamos", "trabajáis", "trabajan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "estudiar", english: "to study", conjugations: ["estudio", "estudias", "estudia", "estudiamos", "estudiáis", "estudian"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "llamar", english: "to call", conjugations: ["llamo", "llamas", "llama", "llamamos", "llamáis", "llaman"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "llevar", english: "to carry/wear", conjugations: ["llevo", "llevas", "lleva", "llevamos", "lleváis", "llevan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "dejar", english: "to leave/let", conjugations: ["dejo", "dejas", "deja", "dejamos", "dejáis", "dejan"] }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>"Movement &amp; Location": [</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "poner", english: "to put", conjugations: ["pongo", "pones", "pone", "ponemos", "ponéis", "ponen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "salir", english: "to leave/go out", conjugations: ["salgo", "sales", "sale", "salimos", "salís", "salen"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "llegar", english: "to arrive", conjugations: ["llego", "llegas", "llega", "llegamos", "llegáis", "llegan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "pasar", english: "to pass/happen", conjugations: ["paso", "pasas", "pasa", "pasamos", "pasáis", "pasan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "encontrar", english: "to find", conjugations: ["encuentro", "encuentras", "encuentra", "encontramos", "encontráis", "encuentran"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "buscar", english: "to look for", conjugations: ["busco", "buscas", "busca", "buscamos", "buscáis", "buscan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "entrar", english: "to enter", conjugations: ["entro", "entras", "entra", "entramos", "entráis", "entran"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "quedar", english: "to remain/stay", conjugations: ["quedo", "quedas", "queda", "quedamos", "quedáis", "quedan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "regresar", english: "to return", conjugations: ["regreso", "regresas", "regresa", "regresamos", "regresáis", "regresan"] },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ spanish: "viajar", english: "to travel", conjugations: ["viajo", "viajas", "viaja", "viajamos", "viajáis", "viajan"] }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [currentIndex, setCurrentIndex] = useState(0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [isFlipped, setIsFlipped] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [mode, setMode] = useState('spanish-to-english');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [selectedSet, setSelectedSet] = useState('Essential Basics');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [shuffledVerbs, setShuffledVerbs] = useState(() =&gt; shuffle(verbSets['Essential Basics']));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [studiedCards, setStudiedCards] = useState(new Set());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [touchStart, setTouchStart] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [touchEnd, setTouchEnd] = useState(null);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>function shuffle(array) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const newArray = [...array];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>for (let i = newArray.length - 1; i &gt; 0; i--) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const j = Math.floor(Math.random() * (i + 1));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>[newArray[i], newArray[j]] = [newArray[j], newArray[i]];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return newArray;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const minSwipeDistance = 50;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const onTouchStart = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setTouchEnd(null);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setTouchStart(e.targetTouches[0].clientX);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const onTouchMove = (e) =&gt; setTouchEnd(e.targetTouches[0].clientX);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const onTouchEnd = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (!touchStart || !touchEnd) return;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const distance = touchStart - touchEnd;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isLeftSwipe = distance &gt; minSwipeDistance;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isRightSwipe = distance &lt; -minSwipeDistance;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (isLeftSwipe) handleNext();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (isRightSwipe) handlePrevious();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleFlip = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setIsFlipped(prevFlipped =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// **IMPROVEMENT**: Only mark as studied when flipping to the answer side.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (!prevFlipped) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>setStudiedCards(prev =&gt; new Set(prev).add(currentIndex));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return !prevFlipped;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleCardClick = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (touchStart &amp;&amp; touchEnd) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const distance = Math.abs(touchStart - touchEnd);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (distance &lt; minSwipeDistance) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>handleFlip();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>handleFlip();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleKeyPress = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (e.key === 'Enter' || e.key === ' ') {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>handleFlip();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleShuffle = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setShuffledVerbs(shuffle(verbSets[selectedSet]));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setCurrentIndex(0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setStudiedCards(new Set());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleSetChange = (setName) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setSelectedSet(setName);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setShuffledVerbs(shuffle(verbSets[setName]));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setCurrentIndex(0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setStudiedCards(new Set());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleNext = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (currentIndex &lt; shuffledVerbs.length - 1) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>setCurrentIndex(currentIndex + 1);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handlePrevious = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (currentIndex &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>setCurrentIndex(currentIndex - 1);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const handleModeToggle = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setMode(mode === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const resetDeck = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setCurrentIndex(0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setIsFlipped(false);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setStudiedCards(new Set());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const currentVerb = shuffledVerbs[currentIndex];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// **FIX**: Progress is now based only on the size of the studiedCards set.</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const totalStudied = studiedCards.size;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const progress = shuffledVerbs.length &gt; 0 ? ((totalStudied / shuffledVerbs.length) * 100).toFixed(1) : 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex flex-col"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="max-w-md mx-auto w-full"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Header */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;header className="text-center mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex items-center justify-center gap-2 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;BookIcon /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;h1 className="text-2xl font-bold text-gray-800"&gt;Spanish Verbs&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p className="text-sm text-gray-600"&gt;Learn essential Spanish verbs by category&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Set Selector */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label htmlFor="set-selector" className="block text-sm font-medium text-gray-700 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Choose a verb set (10 verbs each):</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;select</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>id="set-selector"</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>value={selectedSet}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onChange={(e) =&gt; handleSetChange(e.target.value)}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{Object.keys(verbSets).map((setName) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option key={setName} value={setName}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>{setName}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Progress Bar */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex justify-between text-sm text-gray-600 mb-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span&gt;Progress&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span&gt;{totalStudied}/{shuffledVerbs.length} ({progress}%)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="w-full bg-gray-200 rounded-full h-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>className="bg-indigo-600 h-2 rounded-full transition-all duration-300"</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>style={{ width: `${progress}%` }}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Controls */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="flex justify-between items-center mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onClick={handleModeToggle}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{mode === 'spanish-to-english' ? 'ES → EN' : 'EN → ES'}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="text-sm text-gray-600" aria-live="polite"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{currentIndex + 1} / {shuffledVerbs.length}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onClick={handleShuffle}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>aria-label="Shuffle deck"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;ShuffleIcon /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Flashcard */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>className="relative w-full h-80 mb-6 cursor-pointer perspective-1000"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onClick={handleCardClick}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onTouchStart={onTouchStart}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onTouchMove={onTouchMove}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onTouchEnd={onTouchEnd}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onKeyPress={handleKeyPress}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>role="button"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>tabIndex="0"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>aria-label={`Flashcard: ${isFlipped ? currentVerb.english : currentVerb.spanish}. Tap to flip.`}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{/* Front of card */}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="text-xs uppercase tracking-wide text-gray-500 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>{mode === 'spanish-to-english' ? 'Español' : 'English'}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="text-3xl font-bold text-gray-800 text-center mb-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>{mode === 'spanish-to-english' ? currentVerb.spanish : currentVerb.english}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>{mode === 'spanish-to-english' &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;div className="text-sm text-gray-500 text-center"&gt;({currentVerb.english})&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="absolute bottom-4 text-xs text-gray-400"&gt;Tap or swipe&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                                </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{/* Back of card */}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="absolute inset-0 w-full h-full bg-indigo-50 rounded-xl shadow-lg border-2 border-indigo-200 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="text-xs uppercase tracking-wide text-indigo-600 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>{mode === 'spanish-to-english' ? 'English' : 'Español'}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="text-3xl font-bold text-indigo-800 text-center mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>{mode === 'spanish-to-english' ? currentVerb.english : currentVerb.spanish}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="w-full max-w-xs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;div className="text-xs text-indigo-600 text-center mb-2"&gt;Present Tense Conjugations&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                            </span>{[ "yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas" ].map((pronoun, i) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                                                </span>&lt;React.Fragment key={pronoun}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                                    </span>&lt;div className="text-right text-indigo-700"&gt;{pronoun}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                                    </span>&lt;div className="font-medium text-indigo-900"&gt;{currentVerb.conjugations[i]}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                                </span>&lt;/React.Fragment&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                            </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="absolute bottom-4 text-xs text-indigo-400"&gt;Tap or swipe&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Navigation */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="flex justify-between items-center mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onClick={handlePrevious}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>disabled={currentIndex === 0}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;ChevronLeftIcon /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Previous</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onClick={resetDeck}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>title="Reset to beginning"</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>aria-label="Reset deck to beginning"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;RefreshIcon /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onClick={handleNext}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>disabled={currentIndex === shuffledVerbs.length - 1}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Next</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;ChevronRightIcon /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const root = ReactDOM.createRoot(document.getElementById('root'));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>root.render(React.createElement(SpanishVerbFlashcards));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
