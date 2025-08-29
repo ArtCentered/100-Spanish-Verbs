@@ -220,13 +220,6 @@
                 ).filter((card, index, self) => index === self.findIndex(c => c.spanish === card.spanish));
             }, [activeSets]);
 
-            useEffect(() => {
-                const cardsToStudy = totalPotentialCards.filter(card => !rememberedCards.has(card.spanish));
-                setShuffledCards(shuffle(cardsToStudy));
-                setCurrentIndex(0);
-                setIsFlipped(false);
-            }, [totalPotentialCards, rememberedCards]);
-
             const shuffle = (array) => {
                 const newArray = [...array];
                 for (let i = newArray.length - 1; i > 0; i--) {
@@ -235,6 +228,14 @@
                 }
                 return newArray;
             };
+            
+            // Rebuild deck only when categories change
+            useEffect(() => {
+                const cardsToStudy = totalPotentialCards.filter(card => !rememberedCards.has(card.spanish));
+                setShuffledCards(shuffle(cardsToStudy));
+                setCurrentIndex(0);
+                setIsFlipped(false);
+            }, [totalPotentialCards]);
 
             const speakText = useCallback((text) => {
                 if (!('speechSynthesis' in window)) return;
@@ -259,8 +260,16 @@
             };
             const handleFlip = () => { if (shuffledCards.length > 0) setIsFlipped(f => !f); };
             const handleSpeakerClick = () => { if (shuffledCards[currentIndex]) speakText(shuffledCards[currentIndex].spanish); };
-            const handleShuffle = () => { setShuffledCards(shuffle(shuffledCards)); setCurrentIndex(0); setIsFlipped(false); };
             
+            // Shuffle re-filters the current deck against remembered cards
+            const handleShuffle = () => {
+                const cardsToStudy = totalPotentialCards.filter(card => !rememberedCards.has(card.spanish));
+                setShuffledCards(shuffle(cardsToStudy));
+                setCurrentIndex(0);
+                setIsFlipped(false);
+            };
+            
+            // Toggle only changes the state, does not advance or reshuffle
             const handleToggleRemembered = () => {
                 const currentCard = shuffledCards[currentIndex];
                 if (!currentCard) return;
@@ -274,11 +283,14 @@
 
             const resetDeckProgress = () => {
                 const cardsToReset = totalPotentialCards.map(card => card.spanish);
-                setRememberedCards(prev => {
-                    const newSet = new Set(prev);
-                    cardsToReset.forEach(id => newSet.delete(id));
-                    return newSet;
-                });
+                const newRememberedSet = new Set(rememberedCards);
+                cardsToReset.forEach(id => newRememberedSet.delete(id));
+                setRememberedCards(newRememberedSet);
+
+                // Rebuild the deck immediately so the change is visible
+                setShuffledCards(shuffle(totalPotentialCards));
+                setCurrentIndex(0);
+                setIsFlipped(false);
             };
 
             const handleSetToggle = (setName, forceState) => {
@@ -303,23 +315,20 @@
             const onTouchEnd = (e) => {
                 const { start, end } = touchState;
                 if (start === null) return;
-
                 const distance = end ? Math.abs(start - end) : 0;
                 const minSwipeDistance = 50;
                 const maxTapDistance = 10;
-
                 if (distance > minSwipeDistance) {
                     if (start - end > 0) handleNext(); else handlePrevious();
                 } else if (distance < maxTapDistance) {
-                    e.preventDefault();
-                    handleFlip();
+                    e.preventDefault(); handleFlip();
                 }
                 setTouchState({ start: null, end: null });
             };
 
             const currentCard = shuffledCards[currentIndex];
-            const rememberedCount = totalPotentialCards.length - shuffledCards.length;
-            const progress = totalPotentialCards.length > 0 ? (rememberedCount / totalPotentialCards.length) * 100 : 0;
+            const rememberedCountInSet = totalPotentialCards.length - shuffledCards.length;
+            const progress = totalPotentialCards.length > 0 ? (rememberedCountInSet / totalPotentialCards.length) * 100 : 0;
             const isRemembered = currentCard && rememberedCards.has(currentCard.spanish);
 
             return (
@@ -330,7 +339,7 @@
                         </header>
 
                         <div className="mb-4">
-                            <div className="flex justify-between text-sm text-gray-600 mb-1"><span>Mastery Progress</span><span>{rememberedCount}/{totalPotentialCards.length} ({progress.toFixed(0)}%)</span></div>
+                            <div className="flex justify-between text-sm text-gray-600 mb-1"><span>Mastery Progress</span><span>{rememberedCountInSet}/{totalPotentialCards.length} ({progress.toFixed(0)}%)</span></div>
                             <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full" style={{ width: `${progress}%` }}></div></div>
                         </div>
                         <div className="flex justify-between items-center mb-6">
@@ -344,20 +353,4 @@
                         </div>
                         
                         <DeckControls 
-                            handlers={{ handlePrevious, resetDeckProgress, handleSpeakerClick, handleToggleRemembered, handleNext }}
-                            state={{ deckSize: shuffledCards.length, totalPotentialCards: totalPotentialCards.length, isCardPresent: !!currentCard, isRemembered }}
-                        />
-
-                        <div className="flex-grow"></div>
-
-                        <CategoryTabs activeTab={activeTab} setActiveTab={setActiveTab} activeSets={activeSets} handleSetToggle={handleSetToggle} />
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<SpanishFlashcards />);
-    </script>
-</body>
-</html>
+                            handlers={{ handlePrevious, resetDeckProgress, handleSpeakerC
