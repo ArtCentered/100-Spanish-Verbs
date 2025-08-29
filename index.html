@@ -44,13 +44,13 @@
         const CheckIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>;
 
         // --- DATA SETS ---
-        const baseVerbSets = { "Essential Being & Having": [ { spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] }, { spanish: "estar", english: "to be (temporary)", conjugations: ["estoy", "estás", "está", "estamos", "estáis", "están"] }, { spanish: "tener", english: "to have", conjugations: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"] }, { spanish: "haber", english: "to have (auxiliary)", conjugations: ["he", "has", "ha", "hemos", "habéis", "han"] }, { spanish: "existir", english: "to exist", conjugations: ["existo", "existes", "existe", "existimos", "existís", "existen"] }, { spanish: "quedar", english: "to remain/stay", conjugations: ["quedo", "quedas", "queda", "quedamos", "quedáis", "quedan"] }, { spanish: "resultar", english: "to turn out", conjugations: ["resulto", "resultas", "resulta", "resultamos", "resultáis", "resultan"] }, { spanish: "parecer", english: "to seem", conjugations: ["parezco", "pareces", "parece", "parecemos", "parecéis", "parecen"] }, { spanish: "convertirse", english: "to become", conjugations: ["me convierto", "te conviertes", "se convierte", "nos convertimos", "os convertís", "se convierten"] }, { spanish: "mantenerse", english: "to maintain oneself", conjugations: ["me mantengo", "te mantienes", "se mantiene", "nos mantenemos", "os mantenéis", "se mantienen"] }, { spanish: "permanecer", english: "to remain", conjugations: ["permanezco", "permaneces", "permanece", "permanecemos", "permanecéis", "permanecen"] }, { spanish: "encontrarse", english: "to be located/feel", conjugations: ["me encuentro", "te encuentras", "se encuentra", "nos encontramos", "os encontráis", "se encuentran"] }, { spanish: "hallarse", english: "to find oneself", conjugations: ["me hallo", "te hallas", "se halla", "nos hallamos", "os halláis", "se hallan"] }, { spanish: "constituir", english: "to constitute", conjugations: ["constituyo", "constituyes", "constituye", "constituimos", "constituís", "constituyen"] }, { spanish: "representar", english: "to represent", conjugations: ["represento", "representas", "representa", "representamos", "representáis", "representan"] } ] };
-        const baseNounSets = { "People & Family": [ { spanish: "familia", english: "family" }, { spanish: "madre", english: "mother" }, { spanish: "padre", english: "father" }, { spanish: "hijo", english: "son" }, { spanish: "hija", english: "daughter" }, { spanish: "hermano", english: "brother" }, { spanish: "hermana", english: "sister" }, { spanish: "abuelo", english: "grandfather" }, { spanish: "abuela", english: "grandmother" }, { spanish: "tío", english: "uncle" }, { spanish: "tía", english: "aunt" }, { spanish: "primo", english: "cousin (male)" }, { spanish: "prima", english: "cousin (female)" }, { spanish: "esposo", english: "husband" }, { spanish: "esposa", english: "wife" } ] };
-        const basePhraseSets = { "Greetings & Introductions": [ { spanish: "Hola, ¿cómo estás?", english: "Hello, how are you?" }, { spanish: "Me llamo...", english: "My name is..." }, { spanish: "¿Cómo te llamas?", english: "What's your name?" }, { spanish: "Mucho gusto", english: "Nice to meet you" }, { spanish: "¿De dónde eres?", english: "Where are you from?" }, { spanish: "Soy de...", english: "I'm from..." }, { spanish: "Buenos días", english: "Good morning" }, { spanish: "Buenas tardes", english: "Good afternoon" }, { spanish: "Buenas noches", english: "Good evening/night" }, { spanish: "Hasta luego", english: "See you later" }, { spanish: "Hasta mañana", english: "See you tomorrow" }, { spanish: "¿Qué tal?", english: "How's it going?" }, { spanish: "Encantado/a", english: "Pleased to meet you" }, { spanish: "Adiós", english: "Goodbye" }, { spanish: "Nos vemos", english: "See you" } ] };
+        const baseVerbSets = { "Essential Being & Having": [ { spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] }, { spanish: "estar", english: "to be (temporary)", conjugations: ["estoy", "estás", "está", "estamos", "estáis", "están"] }, { spanish: "tener", english: "to have", conjugations: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"] }, { spanish: "haber", english: "to have (auxiliary)", conjugations: ["he", "has", "ha", "hemos", "habéis", "han"] }, { spanish: "existir", english: "to exist", conjugations: ["existo", "existes", "existe", "existimos", "existís", "existen"] } ] };
+        const baseNounSets = { "People & Family": [ { spanish: "familia", english: "family" }, { spanish: "madre", english: "mother" }, { spanish: "padre", english: "father" }, { spanish: "hijo", english: "son" }, { spanish: "hija", english: "daughter" } ] };
+        const basePhraseSets = { "Greetings & Introductions": [ { spanish: "Hola, ¿cómo estás?", english: "Hello, how are you?" }, { spanish: "Me llamo...", english: "My name is..." }, { spanish: "¿Cómo te llamas?", english: "What's your name?" }, { spanish: "Mucho gusto", english: "Nice to meet you" } ] };
         const allDataSets = { ...baseVerbSets, ...baseNounSets, ...basePhraseSets };
 
         // --- Refactored Component: Flashcard ---
-        const Flashcard = ({ card, isFlipped, mode, handlers }) => {
+        const Flashcard = ({ card, isFlipped, mode }) => {
             if (!card) {
                 return (
                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center p-4 text-center">
@@ -61,13 +61,11 @@
             }
             return (
                 <div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                    {/* Front */}
                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4">
                         <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">{mode === 'spanish-to-english' ? 'Español' : 'English'}</div>
                         <div className={`font-bold text-gray-800 text-center ${card.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? card.spanish : card.english}</div>
                         <div className="absolute bottom-4 text-xs text-gray-400 mt-4">Tap or swipe</div>
                     </div>
-                    {/* Back */}
                     <div className="absolute inset-0 w-full h-full bg-indigo-50 rounded-xl shadow-lg border-2 border-indigo-200 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-4">
                         <div className="text-xs uppercase tracking-wide text-indigo-600 mb-2">{mode === 'spanish-to-english' ? 'English' : 'Español'}</div>
                         <div className={`font-bold text-indigo-800 text-center mb-4 ${card.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? card.english : card.spanish}</div>
@@ -88,31 +86,25 @@
         // --- Refactored Component: DeckControls ---
         const DeckControls = ({ handlers, state }) => (
             <div className="flex justify-between items-center mb-6 mt-4">
-                <button onClick={handlers.handlePrevious} disabled={state.currentIndex === 0 || state.deckSize === 0} className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"><ChevronLeftIcon />Previous</button>
+                <button onClick={handlers.handlePrevious} disabled={state.deckSize === 0} className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"><ChevronLeftIcon />Previous</button>
                 <div className="flex items-center gap-2">
                     <button onClick={handlers.resetDeckProgress} disabled={state.totalPotentialCards === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Reset Progress for Selected Sets" aria-label="Reset deck progress"><RefreshIcon /></button>
                     <button onClick={handlers.handleSpeakerClick} disabled={!state.isCardPresent} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Play audio" aria-label="Play audio"><SpeakerIcon /></button>
                     <button onClick={handlers.handleToggleRemembered} disabled={!state.isCardPresent} className={`p-2 rounded-lg shadow-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${state.isRemembered ? 'bg-green-500 text-white border-green-600 hover:bg-green-600' : 'bg-white text-gray-600 hover:bg-gray-50'}`} title={state.isRemembered ? "Mark as not known" : "Mark as known"}><CheckIcon /></button>
                 </div>
-                <button onClick={handlers.handleNext} disabled={state.deckSize === 0 || state.currentIndex === state.deckSize - 1} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors">Next<ChevronRightIcon /></button>
+                <button onClick={handlers.handleNext} disabled={state.deckSize === 0} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors">Next<ChevronRightIcon /></button>
             </div>
         );
 
         // --- Refactored Component: CategoryTabs ---
         const CategoryTabs = ({ activeTab, setActiveTab, activeSets, handleSetToggle }) => {
-            const CheckboxGrid = ({ sets, type }) => (
+             const CheckboxGrid = ({ sets, type, onToggleAll }) => (
                 <div className="mb-6 bg-white/50 p-4 rounded-lg border border-gray-200 shadow-sm">
-                     <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-3">
                         <label className="text-sm font-medium text-gray-800">Choose {type} Sets:</label>
                         <div className="flex gap-2">
-                             <button onClick={() => {
-                                const updatedSets = { ...activeSets };
-                                Object.keys(sets).forEach(setName => { updatedSets[setName] = true; });
-                                setActiveSets(updatedSets);
-                             }} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
-                             <button onClick={() => {
-                                Object.keys(sets).forEach(setName => { if (activeSets[setName]) handleSetToggle(setName); });
-                             }} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
+                            <button onClick={() => onToggleAll(sets, true)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
+                            <button onClick={() => onToggleAll(sets, false)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -127,17 +119,15 @@
             );
             return (
                 <div>
-                    <div className="border-b border-gray-200">
-                        <nav className="-mb-px flex justify-center gap-6" aria-label="Tabs">
-                            <button onClick={() => setActiveTab('verbs')} className={`${activeTab === 'verbs' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Verbs</button>
-                            <button onClick={() => setActiveTab('nouns')} className={`${activeTab === 'nouns' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Nouns</button>
-                            <button onClick={() => setActiveTab('phrases')} className={`${activeTab === 'phrases' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Phrases</button>
-                        </nav>
-                    </div>
+                    <div className="border-b border-gray-200"><nav className="-mb-px flex justify-center gap-6" aria-label="Tabs">
+                        <button onClick={() => setActiveTab('verbs')} className={`${activeTab === 'verbs' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'} py-4 px-1 border-b-2 font-medium text-sm`}>Verbs</button>
+                        <button onClick={() => setActiveTab('nouns')} className={`${activeTab === 'nouns' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'} py-4 px-1 border-b-2 font-medium text-sm`}>Nouns</button>
+                        <button onClick={() => setActiveTab('phrases')} className={`${activeTab === 'phrases' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'} py-4 px-1 border-b-2 font-medium text-sm`}>Phrases</button>
+                    </nav></div>
                     <div className="pt-5">
-                        {activeTab === 'verbs' && <CheckboxGrid sets={baseVerbSets} type="Verb" />}
-                        {activeTab === 'nouns' && <CheckboxGrid sets={baseNounSets} type="Noun" />}
-                        {activeTab === 'phrases' && <CheckboxGrid sets={basePhraseSets} type="Phrase" />}
+                        {activeTab === 'verbs' && <CheckboxGrid sets={baseVerbSets} type="Verb" onToggleAll={(sets, shouldSelect) => Object.keys(sets).forEach(name => handleSetToggle(name, shouldSelect))} />}
+                        {activeTab === 'nouns' && <CheckboxGrid sets={baseNounSets} type="Noun" onToggleAll={(sets, shouldSelect) => Object.keys(sets).forEach(name => handleSetToggle(name, shouldSelect))} />}
+                        {activeTab === 'phrases' && <CheckboxGrid sets={basePhraseSets} type="Phrase" onToggleAll={(sets, shouldSelect) => Object.keys(sets).forEach(name => handleSetToggle(name, shouldSelect))} />}
                     </div>
                 </div>
             );
@@ -161,7 +151,6 @@
                 } catch { return new Set(); }
             });
 
-            // Debounced localStorage saving
             useEffect(() => {
                 const handler = setTimeout(() => {
                     localStorage.setItem('rememberedSpanishCards', JSON.stringify(Array.from(rememberedCards)));
@@ -169,11 +158,9 @@
                 return () => clearTimeout(handler);
             }, [rememberedCards]);
             
-            // Load speech synthesis voices
             useEffect(() => {
                 const loadVoices = () => setVoices(window.speechSynthesis.getVoices());
-                window.speechSynthesis.onvoiceschanged = loadVoices;
-                loadVoices();
+                window.speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
             }, []);
 
             const totalPotentialCards = useMemo(() => {
@@ -182,15 +169,13 @@
                     if (baseNounSets[setName]) return 'noun';
                     if (basePhraseSets[setName]) return 'phrase';
                 };
-                const allSelected = Object.keys(activeSets).flatMap(setName => 
+                return Object.keys(activeSets).flatMap(setName => 
                     (activeSets[setName] && allDataSets[setName]) 
                         ? allDataSets[setName].map(card => ({ ...card, type: getSetType(setName) })) 
                         : []
-                );
-                return allSelected.filter((card, index, self) => index === self.findIndex(c => c.spanish === card.spanish));
+                ).filter((card, index, self) => index === self.findIndex(c => c.spanish === card.spanish));
             }, [activeSets]);
 
-            // Rebuild and shuffle the deck when dependencies change
             useEffect(() => {
                 const cardsToStudy = totalPotentialCards.filter(card => !rememberedCards.has(card.spanish));
                 setShuffledCards(shuffle(cardsToStudy));
@@ -219,8 +204,16 @@
             }, [voices]);
 
             // --- Event Handlers ---
-            const handleNext = () => { if (currentIndex < shuffledCards.length - 1) { setCurrentIndex(i => i + 1); setIsFlipped(false); } };
-            const handlePrevious = () => { if (currentIndex > 0) { setCurrentIndex(i => i - 1); setIsFlipped(false); } };
+            const handleNext = () => {
+                if (shuffledCards.length === 0) return;
+                setCurrentIndex(i => (i + 1) % shuffledCards.length);
+                setIsFlipped(false);
+            };
+            const handlePrevious = () => {
+                if (shuffledCards.length === 0) return;
+                setCurrentIndex(i => (i - 1 + shuffledCards.length) % shuffledCards.length);
+                setIsFlipped(false);
+            };
             const handleFlip = () => { if (shuffledCards.length > 0) setIsFlipped(f => !f); };
             const handleSpeakerClick = () => { if (shuffledCards[currentIndex]) speakText(shuffledCards[currentIndex].spanish); };
             const handleShuffle = () => { setShuffledCards(shuffle(shuffledCards)); setCurrentIndex(0); setIsFlipped(false); };
@@ -245,9 +238,11 @@
                 });
             };
 
-            const handleSetToggle = (setName) => {
-                const isDisabling = activeSets[setName];
-                if (isDisabling) {
+            const handleSetToggle = (setName, forceState) => {
+                const isCurrentlyActive = activeSets[setName];
+                const shouldBeActive = typeof forceState === 'boolean' ? forceState : !isCurrentlyActive;
+
+                if (!shouldBeActive && isCurrentlyActive) { // If disabling
                     const cardsInSet = allDataSets[setName].map(c => c.spanish);
                     setRememberedCards(prev => {
                         const newSet = new Set(prev);
@@ -255,7 +250,7 @@
                         return newSet;
                     });
                 }
-                setActiveSets(prev => ({ ...prev, [setName]: !prev[setName] }));
+                setActiveSets(prev => ({ ...prev, [setName]: shouldBeActive }));
             };
             
             const onTouchStart = (e) => setTouchState({ start: e.targetTouches[0].clientX, end: null });
@@ -271,7 +266,7 @@
 
             const currentCard = shuffledCards[currentIndex];
             const rememberedCount = totalPotentialCards.length - shuffledCards.length;
-            const progress = totalPotentialCards.length > 0 ? ((rememberedCount / totalPotentialCards.length) * 100).toFixed(1) : 0;
+            const progress = totalPotentialCards.length > 0 ? (rememberedCount / totalPotentialCards.length) * 100 : 0;
             const isRemembered = currentCard && rememberedCards.has(currentCard.spanish);
 
             return (
@@ -279,15 +274,14 @@
                     <div className="max-w-md mx-auto w-full flex flex-col flex-grow">
                         <header className="text-center mb-6">
                             <div className="flex items-center justify-center gap-2 mb-2"><BookIcon /><h1 className="text-2xl font-bold text-gray-800">Spanish Flashcards</h1></div>
-                            <p className="text-sm text-gray-600">Select categories to build your study deck</p>
                         </header>
 
                         <div className="mb-4">
-                            <div className="flex justify-between text-sm text-gray-600 mb-1"><span>Mastery Progress</span><span>{rememberedCount}/{totalPotentialCards.length} ({progress}%)</span></div>
-                            <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div></div>
+                            <div className="flex justify-between text-sm text-gray-600 mb-1"><span>Mastery Progress</span><span>{rememberedCount}/{totalPotentialCards.length} ({progress.toFixed(1)}%)</span></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full" style={{ width: `${progress}%` }}></div></div>
                         </div>
                         <div className="flex justify-between items-center mb-6">
-                            <button onClick={() => setMode(m => m === 'es-en' ? 'en-es' : 'es-en')} className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50">{mode === 'es-en' ? 'ES → EN' : 'EN → ES'}</button>
+                            <button onClick={() => setMode(m => m === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english')} className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50">{mode === 'spanish-to-english' ? 'ES → EN' : 'EN → ES'}</button>
                             <div className="text-sm font-medium text-gray-600">{shuffledCards.length > 0 ? `Card ${currentIndex + 1} / ${shuffledCards.length}` : 'Deck Empty'}</div>
                             <button onClick={handleShuffle} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 disabled:opacity-50"><ShuffleIcon /></button>
                         </div>
@@ -298,7 +292,7 @@
                         
                         <DeckControls 
                             handlers={{ handlePrevious, resetDeckProgress, handleSpeakerClick, handleToggleRemembered, handleNext }}
-                            state={{ currentIndex, deckSize: shuffledCards.length, totalPotentialCards: totalPotentialCards.length, isCardPresent: !!currentCard, isRemembered }}
+                            state={{ deckSize: shuffledCards.length, totalPotentialCards: totalPotentialCards.length, isCardPresent: !!currentCard, isRemembered }}
                         />
 
                         <div className="flex-grow"></div>
