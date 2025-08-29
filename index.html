@@ -34,7 +34,7 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- Icon Components (unchanged) ---
+        // --- Icon Components ---
         const BookIcon = () => (
             <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -58,6 +58,12 @@
         const ShuffleIcon = () => (
             <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+        );
+        // NEW: Speaker Icon
+        const SpeakerIcon = () => (
+             <svg className="w-6 h-6 text-gray-400 hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
             </svg>
         );
 
@@ -148,6 +154,18 @@
                 return newArray;
             };
 
+            // NEW: Audio Function
+            const speakText = (text, lang = 'es-ES') => {
+                // Cancel any previous speech to prevent overlap
+                window.speechSynthesis.cancel();
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = lang;
+                    utterance.rate = 0.8; // Slightly slower for language learning
+                    window.speechSynthesis.speak(utterance);
+                }
+            };
+
             // --- EFFECTS ---
             useEffect(() => {
                 setShuffledCards(shuffle(activeCards));
@@ -180,6 +198,11 @@
             const handleCardClick = (e) => {
                 if (touchStart && touchEnd && Math.abs(touchStart - touchEnd) >= minSwipeDistance) return;
                 handleFlip();
+            };
+
+            const handleSpeakerClick = (e, text) => {
+                e.stopPropagation(); // Prevent the card from flipping when the button is clicked
+                speakText(text);
             };
 
             const handleKeyPress = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(); } };
@@ -288,8 +311,16 @@
                                     {/* Front */}
                                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4">
                                         <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">{mode === 'spanish-to-english' ? 'Español' : 'English'}</div>
-                                        <div className={`font-bold text-gray-800 text-center mb-3 ${currentCard.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? currentCard.spanish : currentCard.english}</div>
-                                        <div className="absolute bottom-4 text-xs text-gray-400">Tap or swipe</div>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`font-bold text-gray-800 text-center ${currentCard.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? currentCard.spanish : currentCard.english}</div>
+                                            {/* NEW: Speaker Button */}
+                                            {mode === 'spanish-to-english' && (
+                                                <button onClick={(e) => handleSpeakerClick(e, currentCard.spanish)} aria-label="Play audio">
+                                                    <SpeakerIcon />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="absolute bottom-4 text-xs text-gray-400 mt-4">Tap or swipe</div>
                                     </div>
                                     
                                     {/* Back */}
