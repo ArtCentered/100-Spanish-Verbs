@@ -7,10 +7,10 @@
     <!-- Web App Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Spanish Verbs">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/gT7h4v4.png">
+    <meta name="apple-mobile-web-app-title" content="Spanish Flashcards">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/gT7h4v4.png">
 
-    <title>Spanish Verb Flashcards</title>
+    <title>Spanish Flashcards</title>
     
     <!-- Scripts -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -62,153 +62,70 @@
         );
 
         // --- Main App Component ---
-        const SpanishVerbFlashcards = () => {
+        const SpanishFlashcards = () => {
+            // --- DATA SETS ---
             const baseVerbSets = {
-                "Essential Basics": [
-                    { spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] },
-                    { spanish: "estar", english: "to be (temporary)", conjugations: ["estoy", "estás", "está", "estamos", "estáis", "están"] },
-                    { spanish: "tener", english: "to have", conjugations: ["tengo", "Tienes", "tiene", "tenemos", "tenéis", "tienen"] },
-                    { spanish: "hacer", english: "to do/make", conjugations: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"] },
-                    { spanish: "ir", english: "to go", conjugations: ["voy", "vas", "va", "vamos", "vais", "van"] },
-                    { spanish: "venir", english: "to come", conjugations: ["vengo", "vienes", "viene", "venimos", "venís", "vienen"] },
-                    { spanish: "ver", english: "to see", conjugations: ["veo", "ves", "ve", "vemos", "veis", "ven"] },
-                    { spanish: "dar", english: "to give", conjugations: ["doy", "das", "da", "damos", "dais", "dan"] },
-                    { spanish: "saber", english: "to know (facts)", conjugations: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"] },
-                    { spanish: "querer", english: "to want/love", conjugations: ["quiero", "quieres", "quiere", "queremos", "queréis", "quieren"] }
-                ],
-                "Common Actions": [
-                    { spanish: "poder", english: "to be able", conjugations: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"] },
-                    { spanish: "decir", english: "to say/tell", conjugations: ["digo", "dices", "dice", "decimos", "decís", "dicen"] },
-                    { spanish: "hablar", english: "to speak", conjugations: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"] },
-                    { spanish: "comer", english: "to eat", conjugations: ["como", "comes", "come", "comemos", "coméis", "comen"] },
-                    { spanish: "vivir", english: "to live", conjugations: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"] },
-                    { spanish: "trabajar", english: "to work", conjugations: ["trabajo", "trabajas", "trabaja", "trabajamos", "trabajáis", "trabajan"] },
-                    { spanish: "escribir", english: "to write", conjugations: ["escribo", "escribes", "escribe", "escribimos", "escribís", "escriben"] },
-                    { spanish: "leer", english: "to read", conjugations: ["leo", "lees", "lee", "leemos", "leéis", "leen"] },
-                    { spanish: "escuchar", english: "to listen", conjugations: ["escucho", "escuchas", "escucha", "escuchamos", "escucháis", "escuchan"] },
-                    { spanish: "comprar", english: "to buy", conjugations: ["compro", "compras", "compra", "compramos", "compráis", "compran"] }
-                ],
-                "Movement & Location": [
-                    { spanish: "poner", english: "to put", conjugations: ["pongo", "pones", "pone", "ponemos", "ponéis", "ponen"] },
-                    { spanish: "salir", english: "to leave/go out", conjugations: ["salgo", "sales", "sale", "salimos", "salís", "salen"] },
-                    { spanish: "llegar", english: "to arrive", conjugations: ["llego", "llegas", "llega", "llegamos", "llegáis", "llegan"] },
-                    { spanish: "pasar", english: "to pass/happen", conjugations: ["paso", "pasas", "pasa", "pasamos", "pasáis", "pasan"] },
-                    { spanish: "encontrar", english: "to find", conjugations: ["encuentro", "encuentras", "encuentra", "encontramos", "encontráis", "encuentran"] },
-                    { spanish: "buscar", english: "to look for", conjugations: ["busco", "buscas", "busca", "buscamos", "buscáis", "buscan"] },
-                    { spanish: "entrar", english: "to enter", conjugations: ["entro", "entras", "entra", "entramos", "entráis", "entran"] },
-                    { spanish: "quedar", english: "to stay/remain", conjugations: ["quedo", "quedas", "queda", "quedamos", "quedáis", "quedan"] },
-                    { spanish: "volver", english: "to return", conjugations: ["vuelvo", "vuelves", "vuelve", "volvemos", "volvéis", "vuelven"] },
-                    { spanish: "viajar", english: "to travel", conjugations: ["viajo", "viajas", "viaja", "viajamos", "viajáis", "viajan"] }
-                ],
-                "Thinking & Knowing": [
-                    { spanish: "pensar", english: "to think", conjugations: ["pienso", "piensas", "piensa", "pensamos", "pensáis", "piensan"] },
-                    { spanish: "creer", english: "to believe", conjugations: ["creo", "crees", "cree", "creemos", "creéis", "creen"] },
-                    { spanish: "entender", english: "to understand", conjugations: ["entiendo", "entiendes", "entiende", "entendemos", "entendéis", "entienden"] },
-                    { spanish: "conocer", english: "to know (people/places)", conjugations: ["conozco", "conoces", "conoce", "conocemos", "conocéis", "conocen"] },
-                    { spanish: "recordar", english: "to remember", conjugations: ["recuerdo", "recuerdas", "recuerda", "recordamos", "recordáis", "recuerdan"] },
-                    { spanish: "olvidar", english: "to forget", conjugations: ["olvido", "olvidas", "olvida", "olvidamos", "olvidáis", "olvidan"] },
-                    { spanish: "aprender", english: "to learn", conjugations: ["aprendo", "aprendes", "aprende", "aprendemos", "aprendéis", "aprenden"] },
-                    { spanish: "decidir", english: "to decide", conjugations: ["decido", "decides", "decide", "decidimos", "decidís", "deciden"] },
-                    { spanish: "parecer", english: "to seem", conjugations: ["parezco", "pareces", "parece", "parecemos", "parecéis", "parecen"] },
-                    { spanish: "sentir", english: "to feel", conjugations: ["siento", "sientes", "siente", "sentimos", "sentís", "sienten"] }
-                ],
-                "Daily Routines": [
-                    { spanish: "despertarse", english: "to wake up", conjugations: ["me despierto", "te despiertas", "se despierta", "nos despertamos", "os despertáis", "se despiertan"] },
-                    { spanish: "levantarse", english: "to get up", conjugations: ["me levanto", "te levantas", "se levanta", "nos levantamos", "os levantáis", "se levantan"] },
-                    { spanish: "ducharse", english: "to shower", conjugations: ["me ducho", "te duchas", "se ducha", "nos duchamos", "os ducháis", "se duchan"] },
-                    { spanish: "vestirse", english: "to get dressed", conjugations: ["me visto", "te vistes", "se viste", "nos vestimos", "os vestís", "se visten"] },
-                    { spanish: "desayunar", english: "to have breakfast", conjugations: ["desayuno", "desayunas", "desayuna", "desayunamos", "desayunáis", "desayunan"] },
-                    { spanish: "almorzar", english: "to have lunch", conjugations: ["almuerzo", "almuerzas", "almuerza", "almorzamos", "almorzáis", "almuerzan"] },
-                    { spanish: "cenar", english: "to have dinner", conjugations: ["ceno", "cenas", "cena", "cenamos", "cenáis", "cenan"] },
-                    { spanish: "acostarse", english: "to go to bed", conjugations: ["me acuesto", "te acuestas", "se acuesta", "nos acostamos", "os acostáis", "se acuestan"] },
-                    { spanish: "dormir", english: "to sleep", conjugations: ["duermo", "duermes", "duerme", "dormimos", "dormís", "duermen"] },
-                    { spanish: "limpiar", english: "to clean", conjugations: ["limpio", "limpias", "limpia", "limpiamos", "limpiáis", "limpian"] }
-                ],
-                "Social & Communication": [
-                    { spanish: "ayudar", english: "to help", conjugations: ["ayudo", "ayudas", "ayuda", "ayudamos", "ayudáis", "ayudan"] },
-                    { spanish: "llamar", english: "to call", conjugations: ["llamo", "llamas", "llama", "llamamos", "llamáis", "llaman"] },
-                    { spanish: "preguntar", english: "to ask", conjugations: ["pregunto", "preguntas", "pregunta", "preguntamos", "preguntáis", "preguntan"] },
-                    { spanish: "responder", english: "to answer", conjugations: ["respondo", "respondes", "responde", "respondemos", "respondéis", "responden"] },
-                    { spanish: "mostrar", english: "to show", conjugations: ["muestro", "muestras", "muestra", "mostramos", "mostráis", "muestran"] },
-                    { spanish: "explicar", english: "to explain", conjugations: ["explico", "explicas", "explica", "explicamos", "explicáis", "explican"] },
-                    { spanish: "necesitar", english: "to need", conjugations: ["necesito", "necesitas", "necesita", "necesitamos", "necesitáis", "necesitan"] },
-                    { spanish: "usar", english: "to use", conjugations: ["uso", "usas", "usa", "usamos", "usáis", "usan"] },
-                    { spanish: "llevar", english: "to wear/carry", conjugations: ["llevo", "llevas", "lleva", "llevamos", "lleváis", "llevan"] },
-                    { spanish: "seguir", english: "to follow", conjugations: ["sigo", "sigues", "sigue", "seguimos", "seguís", "siguen"] }
-                ],
-                "Actions & Activities": [
-                    { spanish: "jugar", english: "to play (sport/game)", conjugations: ["juego", "juegas", "juega", "jugamos", "jugáis", "juegan"] },
-                    { spanish: "cantar", english: "to sing", conjugations: ["canto", "cantas", "canta", "cantamos", "cantáis", "cantan"] },
-                    { spanish: "bailar", english: "to dance", conjugations: ["bailo", "bailas", "baila", "bailamos", "bailáis", "bailan"] },
-                    { spanish: "correr", english: "to run", conjugations: ["corro", "corres", "corre", "corremos", "corréis", "corren"] },
-                    { spanish: "nadar", english: "to swim", conjugations: ["nado", "nadas", "nada", "nadamos", "nadáis", "nadan"] },
-                    { spanish: "cocinar", english: "to cook", conjugations: ["cocino", "cocinas", "cocina", "cocinamos", "cocináis", "cocinan"] },
-                    { spanish: "abrir", english: "to open", conjugations: ["abro", "abres", "abre", "abrimos", "abrís", "abren"] },
-                    { spanish: "cerrar", english: "to close", conjugations: ["cierro", "cierras", "cierra", "cerramos", "cerráis", "cierran"] },
-                    { spanish: "ganar", english: "to win/earn", conjugations: ["gano", "ganas", "gana", "ganamos", "ganáis", "ganan"] },
-                    { spanish: "perder", english: "to lose", conjugations: ["pierdo", "pierdes", "pierde", "perdemos", "perdéis", "pierden"] }
-                ],
-                "Possession & Change": [
-                    { spanish: "cambiar", english: "to change", conjugations: ["cambio", "cambias", "cambia", "cambiamos", "cambiáis", "cambian"] },
-                    { spanish: "empezar", english: "to begin/start", conjugations: ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"] },
-                    { spanish: "terminar", english: "to finish/end", conjugations: ["termino", "terminas", "termina", "terminamos", "termináis", "terminan"] },
-                    { spanish: "dejar", english: "to leave/allow", conjugations: ["dejo", "dejas", "deja", "dejamos", "dejáis", "dejan"] },
-                    { spanish: "recibir", english: "to receive", conjugations: ["recibo", "recibes", "recibe", "recibimos", "recibís", "reciben"] },
-                    { spanish: "pagar", english: "to pay", conjugations: ["pago", "pagas", "paga", "pagamos", "pagáis", "pagan"] },
-                    { spanish: "vender", english: "to sell", conjugations: ["vendo", "vendes", "vende", "vendemos", "vendéis", "venden"] },
-                    { spanish: "crear", english: "to create", conjugations: ["creo", "creas", "crea", "creamos", "creáis", "crean"] }, 
-                    { spanish: "morir", english: "to die", conjugations: ["muero", "mueres", "muere", "morimos", "morís", "mueren"] },
-                    { spanish: "nacer", english: "to be born", conjugations: ["nazco", "naces", "nace", "nacemos", "nacéis", "nacen"] }
-                ],
-                 "General Use Verbs 1": [
-                    { spanish: "tomar", english: "to take/drink", conjugations: ["tomo", "tomas", "toma", "tomamos", "tomáis", "toman"] },
-                    { spanish: "mirar", english: "to look at/watch", conjugations: ["miro", "miras", "mira", "miramos", "miráis", "miran"] },
-                    { spanish: "esperar", english: "to wait/hope", conjugations: ["espero", "esperas", "espera", "esperamos", "esperáis", "esperan"] },
-                    { spanish: "entregar", english: "to deliver/hand in", conjugations: ["entrego", "entregas", "entrega", "entregamos", "entregáis", "entregan"] },
-                    { spanish: "contar", english: "to count/tell", conjugations: ["cuento", "cuentas", "cuenta", "contamos", "contáis", "cuentan"] },
-                    { spanish: "servir", english: "to serve", conjugations: ["sirvo", "sirves", "sirve", "servimos", "servís", "sirven"] },
-                    { spanish: "pedir", english: "to ask for/order", conjugations: ["pido", "pides", "pide", "pedimos", "pedís", "piden"] },
-                    { spanish: "caer", english: "to fall", conjugations: ["caigo", "caes", "cae", "caemos", "caéis", "caen"] },
-                    { spanish: "tratar", english: "to try/treat", conjugations: ["trato", "tratas", "trata", "tratamos", "tratáis", "tratan"] },
-                    { spanish: "gastar", english: "to spend (money)", conjugations: ["gasto", "gastas", "gasta", "gastamos", "gastáis", "gastan"] }
-                ],
-                "General Use Verbs 2": [
-                    { spanish: "existir", english: "to exist", conjugations: ["existo", "existes", "existe", "existimos", "existís", "existen"] },
-                    { spanish: "producir", english: "to produce", conjugations: ["produzco", "produces", "produce", "producimos", "producís", "producen"] },
-                    { spanish: "ocurrir", english: "to happen", conjugations: ["ocurro", "ocurres", "ocurre", "ocurrimos", "ocurrís", "ocurren"] },
-                    { spanish: "lograr", english: "to achieve/manage", conjugations: ["logro", "logras", "logra", "logramos", "lográis", "logran"] },
-                    { spanish: "descubrir", english: "to discover", conjugations: ["descubro", "descubres", "descubre", "descubrimos", "descubrís", "descubren"] },
-                    { spanish: "mantener", english: "to maintain", conjugations: ["mantengo", "mantienes", "mantiene", "mantenemos", "mantenéis", "mantienen"] },
-                    { spanish: "permitir", english: "to permit/allow", conjugations: ["permito", "permites", "permite", "permitimos", "permitís", "permiten"] },
-                    { spanish: "ofrecer", english: "to offer", conjugations: ["ofrezco", "ofreces", "ofrece", "ofrecemos", "ofrecéis", "ofrecen"] },
-                    { spanish: "resultar", english: "to turn out/result", conjugations: ["resulto", "resultas", "resulta", "resultamos", "resultáis", "resultan"] },
-                    { spanish: "sugerir", english: "to suggest", conjugations: ["sugiero", "sugieres", "sugiere", "sugerimos", "sugerís", "sugieren"] }
-                ]
+                "Essential Basics": [ { spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] }, { spanish: "estar", english: "to be (temporary)", conjugations: ["estoy", "estás", "está", "estamos", "estáis", "están"] }, { spanish: "tener", english: "to have", conjugations: ["tengo", "Tienes", "tiene", "tenemos", "tenéis", "tienen"] }, { spanish: "hacer", english: "to do/make", conjugations: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"] }, { spanish: "ir", english: "to go", conjugations: ["voy", "vas", "va", "vamos", "vais", "van"] }, { spanish: "venir", english: "to come", conjugations: ["vengo", "vienes", "viene", "venimos", "venís", "vienen"] }, { spanish: "ver", english: "to see", conjugations: ["veo", "ves", "ve", "vemos", "veis", "ven"] }, { spanish: "dar", english: "to give", conjugations: ["doy", "das", "da", "damos", "dais", "dan"] }, { spanish: "saber", english: "to know (facts)", conjugations: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"] }, { spanish: "querer", english: "to want/love", conjugations: ["quiero", "quieres", "quiere", "queremos", "queréis", "quieren"] } ],
+                "Common Actions": [ { spanish: "poder", english: "to be able", conjugations: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"] }, { spanish: "decir", english: "to say/tell", conjugations: ["digo", "dices", "dice", "decimos", "decís", "dicen"] }, { spanish: "hablar", english: "to speak", conjugations: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"] }, { spanish: "comer", english: "to eat", conjugations: ["como", "comes", "come", "comemos", "coméis", "comen"] }, { spanish: "vivir", english: "to live", conjugations: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"] }, { spanish: "trabajar", english: "to work", conjugations: ["trabajo", "trabajas", "trabaja", "trabajamos", "trabajáis", "trabajan"] }, { spanish: "escribir", english: "to write", conjugations: ["escribo", "escribes", "escribe", "escribimos", "escribís", "escriben"] }, { spanish: "leer", english: "to read", conjugations: ["leo", "lees", "lee", "leemos", "leéis", "leen"] }, { spanish: "escuchar", english: "to listen", conjugations: ["escucho", "escuchas", "escucha", "escuchamos", "escucháis", "escuchan"] }, { spanish: "comprar", english: "to buy", conjugations: ["compro", "compras", "compra", "compramos", "compráis", "compran"] } ],
+                "Movement & Location": [ { spanish: "poner", english: "to put", conjugations: ["pongo", "pones", "pone", "ponemos", "ponéis", "ponen"] }, { spanish: "salir", english: "to leave/go out", conjugations: ["salgo", "sales", "sale", "salimos", "salís", "salen"] }, { spanish: "llegar", english: "to arrive", conjugations: ["llego", "llegas", "llega", "llegamos", "llegáis", "llegan"] }, { spanish: "pasar", english: "to pass/happen", conjugations: ["paso", "pasas", "pasa", "pasamos", "pasáis", "pasan"] }, { spanish: "encontrar", english: "to find", conjugations: ["encuentro", "encuentras", "encuentra", "encontramos", "encontráis", "encuentran"] }, { spanish: "buscar", english: "to look for", conjugations: ["busco", "buscas", "busca", "buscamos", "buscáis", "buscan"] }, { spanish: "entrar", english: "to enter", conjugations: ["entro", "entras", "entra", "entramos", "entráis", "entran"] }, { spanish: "quedar", english: "to stay/remain", conjugations: ["quedo", "quedas", "queda", "quedamos", "quedáis", "quedan"] }, { spanish: "volver", english: "to return", conjugations: ["vuelvo", "vuelves", "vuelve", "volvemos", "volvéis", "vuelven"] }, { spanish: "viajar", english: "to travel", conjugations: ["viajo", "viajas", "viaja", "viajamos", "viajáis", "viajan"] } ],
+                "Thinking & Knowing": [ { spanish: "pensar", english: "to think", conjugations: ["pienso", "piensas", "piensa", "pensamos", "pensáis", "piensan"] }, { spanish: "creer", english: "to believe", conjugations: ["creo", "crees", "cree", "creemos", "creéis", "creen"] }, { spanish: "entender", english: "to understand", conjugations: ["entiendo", "entiendes", "entiende", "entendemos", "entendéis", "entienden"] }, { spanish: "conocer", english: "to know (people/places)", conjugations: ["conozco", "conoces", "conoce", "conocemos", "conocéis", "conocen"] }, { spanish: "recordar", english: "to remember", conjugations: ["recuerdo", "recuerdas", "recuerda", "recordamos", "recordáis", "recuerdan"] }, { spanish: "olvidar", english: "to forget", conjugations: ["olvido", "olvidas", "olvida", "olvidamos", "olvidáis", "olvidan"] }, { spanish: "aprender", english: "to learn", conjugations: ["aprendo", "aprendes", "aprende", "aprendemos", "aprendéis", "aprenden"] }, { spanish: "decidir", english: "to decide", conjugations: ["decido", "decides", "decide", "decidimos", "decidís", "deciden"] }, { spanish: "parecer", english: "to seem", conjugations: ["parezco", "pareces", "parece", "parecemos", "parecéis", "parecen"] }, { spanish: "sentir", english: "to feel", conjugations: ["siento", "sientes", "siente", "sentimos", "sentís", "sienten"] } ],
+                "Daily Routines": [ { spanish: "despertarse", english: "to wake up", conjugations: ["me despierto", "te despiertas", "se despierta", "nos despertamos", "os despertáis", "se despiertan"] }, { spanish: "levantarse", english: "to get up", conjugations: ["me levanto", "te levantas", "se levanta", "nos levantamos", "os levantáis", "se levantan"] }, { spanish: "ducharse", english: "to shower", conjugations: ["me ducho", "te duchas", "se ducha", "nos duchamos", "os ducháis", "se duchan"] }, { spanish: "vestirse", english: "to get dressed", conjugations: ["me visto", "te vistes", "se viste", "nos vestimos", "os vestís", "se visten"] }, { spanish: "desayunar", english: "to have breakfast", conjugations: ["desayuno", "desayunas", "desayuna", "desayunamos", "desayunáis", "desayunan"] }, { spanish: "almorzar", english: "to have lunch", conjugations: ["almuerzo", "almuerzas", "almuerza", "almorzamos", "almorzáis", "almuerzan"] }, { spanish: "cenar", english: "to have dinner", conjugations: ["ceno", "cenas", "cena", "cenamos", "cenáis", "cenan"] }, { spanish: "acostarse", english: "to go to bed", conjugations: ["me acuesto", "te acuestas", "se acuesta", "nos acostamos", "os acostáis", "se acuestan"] }, { spanish: "dormir", english: "to sleep", conjugations: ["duermo", "duermes", "duerme", "dormimos", "dormís", "duermen"] }, { spanish: "limpiar", english: "to clean", conjugations: ["limpio", "limpias", "limpia", "limpiamos", "limpiáis", "limpian"] } ],
+                "Social & Communication": [ { spanish: "ayudar", english: "to help", conjugations: ["ayudo", "ayudas", "ayuda", "ayudamos", "ayudáis", "ayudan"] }, { spanish: "llamar", english: "to call", conjugations: ["llamo", "llamas", "llama", "llamamos", "llamáis", "llaman"] }, { spanish: "preguntar", english: "to ask", conjugations: ["pregunto", "preguntas", "pregunta", "preguntamos", "preguntáis", "preguntan"] }, { spanish: "responder", english: "to answer", conjugations: ["respondo", "respondes", "responde", "respondemos", "respondéis", "responden"] }, { spanish: "mostrar", english: "to show", conjugations: ["muestro", "muestras", "muestra", "mostramos", "mostráis", "muestran"] }, { spanish: "explicar", english: "to explain", conjugations: ["explico", "explicas", "explica", "explicamos", "explicáis", "explican"] }, { spanish: "necesitar", english: "to need", conjugations: ["necesito", "necesitas", "necesita", "necesitamos", "necesitáis", "necesitan"] }, { spanish: "usar", english: "to use", conjugations: ["uso", "usas", "usa", "usamos", "usáis", "usan"] }, { spanish: "llevar", english: "to wear/carry", conjugations: ["llevo", "llevas", "lleva", "llevamos", "lleváis", "llevan"] }, { spanish: "seguir", english: "to follow", conjugations: ["sigo", "sigues", "sigue", "seguimos", "seguís", "siguen"] } ],
+                "Actions & Activities": [ { spanish: "jugar", english: "to play (sport/game)", conjugations: ["juego", "juegas", "juega", "jugamos", "jugáis", "juegan"] }, { spanish: "cantar", english: "to sing", conjugations: ["canto", "cantas", "canta", "cantamos", "cantáis", "cantan"] }, { spanish: "bailar", english: "to dance", conjugations: ["bailo", "bailas", "baila", "bailamos", "bailáis", "bailan"] }, { spanish: "correr", english: "to run", conjugations: ["corro", "corres", "corre", "corremos", "corréis", "corren"] }, { spanish: "nadar", english: "to swim", conjugations: ["nado", "nadas", "nada", "nadamos", "nadáis", "nadan"] }, { spanish: "cocinar", english: "to cook", conjugations: ["cocino", "cocinas", "cocina", "cocinamos", "cocináis", "cocinan"] }, { spanish: "abrir", english: "to open", conjugations: ["abro", "abres", "abre", "abrimos", "abrís", "abren"] }, { spanish: "cerrar", english: "to close", conjugations: ["cierro", "cierras", "cierra", "cerramos", "cerráis", "cierran"] }, { spanish: "ganar", english: "to win/earn", conjugations: ["gano", "ganas", "gana", "ganamos", "ganáis", "ganan"] }, { spanish: "perder", english: "to lose", conjugations: ["pierdo", "pierdes", "pierde", "perdemos", "perdéis", "pierden"] } ],
+                "Possession & Change": [ { spanish: "cambiar", english: "to change", conjugations: ["cambio", "cambias", "cambia", "cambiamos", "cambiáis", "cambian"] }, { spanish: "empezar", english: "to begin/start", conjugations: ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"] }, { spanish: "terminar", english: "to finish/end", conjugations: ["termino", "terminas", "termina", "terminamos", "termináis", "terminan"] }, { spanish: "dejar", english: "to leave/allow", conjugations: ["dejo", "dejas", "deja", "dejamos", "dejáis", "dejan"] }, { spanish: "recibir", english: "to receive", conjugations: ["recibo", "recibes", "recibe", "recibimos", "recibís", "reciben"] }, { spanish: "pagar", english: "to pay", conjugations: ["pago", "pagas", "paga", "pagamos", "pagáis", "pagan"] }, { spanish: "vender", english: "to sell", conjugations: ["vendo", "vendes", "vende", "vendemos", "vendéis", "venden"] }, { spanish: "crear", english: "to create", conjugations: ["creo", "creas", "crea", "creamos", "creáis", "crean"] }, { spanish: "morir", english: "to die", conjugations: ["muero", "mueres", "muere", "morimos", "morís", "mueren"] }, { spanish: "nacer", english: "to be born", conjugations: ["nazco", "naces", "nace", "nacemos", "nacéis", "nacen"] } ],
+                "General Use Verbs 1": [ { spanish: "tomar", english: "to take/drink", conjugations: ["tomo", "tomas", "toma", "tomamos", "tomáis", "toman"] }, { spanish: "mirar", english: "to look at/watch", conjugations: ["miro", "miras", "mira", "miramos", "miráis", "miran"] }, { spanish: "esperar", english: "to wait/hope", conjugations: ["espero", "esperas", "espera", "esperamos", "esperáis", "esperan"] }, { spanish: "entregar", english: "to deliver/hand in", conjugations: ["entrego", "entregas", "entrega", "entregamos", "entregáis", "entregan"] }, { spanish: "contar", english: "to count/tell", conjugations: ["cuento", "cuentas", "cuenta", "contamos", "contáis", "cuentan"] }, { spanish: "servir", english: "to serve", conjugations: ["sirvo", "sirves", "sirve", "servimos", "servís", "sirven"] }, { spanish: "pedir", english: "to ask for/order", conjugations: ["pido", "pides", "pide", "pedimos", "pedís", "piden"] }, { spanish: "caer", english: "to fall", conjugations: ["caigo", "caes", "cae", "caemos", "caéis", "caen"] }, { spanish: "tratar", english: "to try/treat", conjugations: ["trato", "tratas", "trata", "tratamos", "tratáis", "tratan"] }, { spanish: "gastar", english: "to spend (money)", conjugations: ["gasto", "gastas", "gasta", "gastamos", "gastáis", "gastan"] } ],
+                "General Use Verbs 2": [ { spanish: "existir", english: "to exist", conjugations: ["existo", "existes", "existe", "existimos", "existís", "existen"] }, { spanish: "producir", english: "to produce", conjugations: ["produzco", "produces", "produce", "producimos", "producís", "producen"] }, { spanish: "ocurrir", english: "to happen", conjugations: ["ocurro", "ocurres", "ocurre", "ocurrimos", "ocurrís", "ocurren"] }, { spanish: "lograr", english: "to achieve/manage", conjugations: ["logro", "logras", "logra", "logramos", "lográis", "logran"] }, { spanish: "descubrir", english: "to discover", conjugations: ["descubro", "descubres", "descubre", "descubrimos", "descubrís", "descubren"] }, { spanish: "mantener", english: "to maintain", conjugations: ["mantengo", "mantienes", "mantiene", "mantenemos", "mantenéis", "mantienen"] }, { spanish: "permitir", english: "to permit/allow", conjugations: ["permito", "permites", "permite", "permitimos", "permitís", "permiten"] }, { spanish: "ofrecer", english: "to offer", conjugations: ["ofrezco", "ofreces", "ofrece", "ofrecemos", "ofrecéis", "ofrecen"] }, { spanish: "resultar", english: "to turn out/result", conjugations: ["resulto", "resultas", "resulta", "resultamos", "resultáis", "resultan"] }, { spanish: "sugerir", english: "to suggest", conjugations: ["sugiero", "sugieres", "sugiere", "sugerimos", "sugerís", "sugieren"] } ],
+                // --- NEW VERB SETS START HERE ---
+                "Advanced Actions": [ { spanish: "conducir", english: "to drive", conjugations: ["conduzco", "conduces", "conduce", "conducimos", "conducís", "conducen"] }, { spanish: "construir", english: "to build", conjugations: ["construyo", "construyes", "construye", "construimos", "construís", "construyen"] }, { spanish: "dibujar", english: "to draw", conjugations: ["dibujo", "dibujas", "dibuja", "dibujamos", "dibujáis", "dibujan"] }, { spanish: "romper", english: "to break", conjugations: ["rompo", "rompes", "rompe", "rompemos", "rompéis", "rompen"] }, { spanish: "reparar", english: "to repair", conjugations: ["reparo", "reparas", "repara", "reparamos", "reparáis", "reparan"] }, { spanish: "enseñar", english: "to teach", conjugations: ["enseño", "enseñas", "enseña", "enseñamos", "enseñáis", "enseñan"] }, { spanish: "tocar", english: "to touch/play (instrument)", conjugations: ["toco", "tocas", "toca", "tocamos", "tocáis", "tocan"] }, { spanish: "beber", english: "to drink", conjugations: ["bebo", "bebes", "bebe", "bebemos", "bebéis", "beben"] }, { spanish: "caminar", english: "to walk", conjugations: ["camino", "caminas", "camina", "caminamos", "camináis", "caminan"] }, { spanish: "estudiar", english: "to study", conjugations: ["estudio", "estudias", "estudia", "estudiamos", "estudiáis", "estudian"] } ],
+                "Movement & Change": [ { spanish: "mover", english: "to move", conjugations: ["muevo", "mueves", "mueve", "movemos", "movéis", "mueven"] }, { spanish: "subir", english: "to go up/climb", conjugations: ["subo", "subes", "sube", "subimos", "subís", "suben"] }, { spanish: "bajar", english: "to go down/lower", conjugations: ["bajo", "bajas", "baja", "bajamos", "bajáis", "bajan"] }, { spanish: "caerse", english: "to fall down", conjugations: ["me caigo", "te caes", "se cae", "nos caemos", "os caéis", "se caen"] }, { spanish: "crecer", english: "to grow", conjugations: ["crezco", "creces", "crece", "crecemos", "crecéis", "crecen"] }, { spanish: "mejorar", english: "to improve", conjugations: ["mejoro", "mejoras", "mejora", "mejoramos", "mejoráis", "mejoran"] }, { spanish: "transformar", english: "to transform", conjugations: ["transformo", "transformas", "transforma", "transformamos", "transformáis", "transforman"] }, { spanish: "aparecer", english: "to appear", conjugations: ["aparezco", "apareces", "aparece", "aparecemos", "aparecéis", "aparecen"] }, { spanish: "durar", english: "to last", conjugations: ["duro", "duras", "dura", "duramos", "duráis", "duran"] } ],
+                "Social & Daily Life": [ { spanish: "visitar", english: "to visit", conjugations: ["visito", "visitas", "visita", "visitamos", "visitáis", "visitan"] }, { spanish: "invitar", english: "to invite", conjugations: ["invito", "invitas", "invita", "invitamos", "invitáis", "invitan"] }, { spanish: "saludar", english: "to greet", conjugations: ["saludo", "saludas", "saluda", "saludamos", "saludáis", "saludan"] }, { spanish: "acompañar", english: "to accompany", conjugations: ["acompaño", "acompañas", "acompaña", "acompañamos", "acompañáis", "acompañan"] }, { spanish: "compartir", english: "to share", conjugations: ["comparto", "compartes", "comparte", "compartimos", "compartís", "comparten"] }, { spanish: "preparar", english: "to prepare", conjugations: ["preparo", "preparas", "prepara", "preparamos", "preparáis", "preparan"] }, { spanish: "descansar", english: "to rest", conjugations: ["descanso", "descansas", "descansa", "descansamos", "descansáis", "descansan"] }, { spanish: "relajarse", english: "to relax", conjugations: ["me relajo", "te relajas", "se relaja", "nos relajamos", "os relajáis", "se relajan"] }, { spanish: "peinarse", english: "to comb one's hair", conjugations: ["me peino", "te peinas", "se peina", "nos peinamos", "os peináis", "se peinan"] } ],
+                "Reflexive & Abstract": [ { spanish: "maquillarse", english: "to put on makeup", conjugations: ["me maquillo", "te maquillas", "se maquilla", "nos maquillamos", "os maquilláis", "se maquillan"] }, { spanish: "soñar", english: "to dream", conjugations: ["sueño", "sueñas", "sueña", "soñamos", "soñáis", "sueñan"] }, { spanish: "considerar", english: "to consider", conjugations: ["considero", "consideras", "considera", "consideramos", "consideráis", "consideran"] }, { spanish: "imaginar", english: "to imagine", conjugations: ["imagino", "imaginas", "imagina", "imaginamos", "imagináis", "imaginan"] }, { spanish: "dudar", english: "to doubt", conjugations: ["dudo", "dudas", "duda", "dudamos", "dudáis", "dudan"] }, { spanish: "funcionar", english: "to work/function", conjugations: ["funciono", "funcionas", "funciona", "funcionamos", "funcionáis", "funcionan"] }, { spanish: "importar", english: "to matter/import", conjugations: ["importo", "importas", "importa", "importamos", "importáis", "importan"] }, { spanish: "faltar", english: "to be missing/lack", conjugations: ["falto", "faltas", "falta", "faltamos", "faltáis", "faltan"] }, { spanish: "evitar", english: "to avoid", conjugations: ["evito", "evitas", "evita", "evitamos", "evitáis", "evitan"] } ],
+                "Modal & Transactional": [ { spanish: "haber", english: "to have (auxiliary)", conjugations: ["he", "has", "ha", "hemos", "habéis", "han"] }, { spanish: "deber", english: "to owe/should", conjugations: ["debo", "debes", "debe", "debemos", "debéis", "deben"] }, { spanish: "traer", english: "to bring", conjugations: ["traigo", "traes", "trae", "traemos", "traéis", "traen"] }, { spanish: "conseguir", english: "to get/obtain", conjugations: ["consigo", "consigues", "consigue", "conseguimos", "conseguís", "consiguen"] }, { spanish: "elegir", english: "to choose", conjugations: ["elijo", "eliges", "elige", "elegimos", "elegís", "eligen"] }, { spanish: "incluir", english: "to include", conjugations: ["incluyo", "incluyes", "incluye", "incluimos", "incluís", "incluyen"] }, { spanish: "ahorrar", english: "to save (money)", conjugations: ["ahorro", "ahorras", "ahorra", "ahorramos", "ahorráis", "ahorran"] }, { spanish: "prestar", english: "to lend", conjugations: ["presto", "prestas", "presta", "prestamos", "prestáis", "prestan"] }, { spanish: "regalar", english: "to give as a gift", conjugations: ["regalo", "regalas", "regala", "regalamos", "regaláis", "regalan"] } ]
             };
+            const baseNounSets = {
+                "Travel & Transportation": [ { spanish: "aeropuerto", english: "airport" }, { spanish: "avión", english: "airplane" }, { spanish: "tren", english: "train" }, { spanish: "autobús", english: "bus" }, { spanish: "coche", english: "car" }, { spanish: "taxi", english: "taxi" }, { spanish: "hotel", english: "hotel" }, { spanish: "maleta", english: "suitcase" }, { spanish: "pasaporte", english: "passport" }, { spanish: "billete", english: "ticket" }, { spanish: "estación", english: "station" }, { spanish: "viaje", english: "trip/journey" }, { spanish: "turista", english: "tourist" }, { spanish: "mapa", english: "map" }, { spanish: "ciudad", english: "city" } ],
+                "Food & Dining": [ { spanish: "comida", english: "food" }, { spanish: "agua", english: "water" }, { spanish: "pan", english: "bread" }, { spanish: "leche", english: "milk" }, { spanish: "carne", english: "meat" }, { spanish: "pollo", english: "chicken" }, { spanish: "pescado", english: "fish" }, { spanish: "verdura", english: "vegetable" }, { spanish: "fruta", english: "fruit" }, { spanish: "arroz", english: "rice" }, { spanish: "queso", english: "cheese" }, { spanish: "huevo", english: "egg" }, { spanish: "azúcar", english: "sugar" }, { spanish: "sal", english: "salt" }, { spanish: "restaurante", english: "restaurant" } ],
+                "Home & Furniture": [ { spanish: "casa", english: "house" }, { spanish: "habitación", english: "room" }, { spanish: "cocina", english: "kitchen" }, { spanish: "baño", english: "bathroom" }, { spanish: "cama", english: "bed" }, { spanish: "mesa", english: "table" }, { spanish: "silla", english: "chair" }, { spanish: "puerta", english: "door" }, { spanish: "ventana", english: "window" }, { spanish: "televisión", english: "television" }, { spanish: "teléfono", english: "phone" }, { spanish: "ordenador", english: "computer" }, { spanish: "sofá", english: "sofa" }, { spanish: "jardín", english: "garden" }, { spanish: "balcón", english: "balcony" } ],
+                "Clothing & Accessories": [ { spanish: "ropa", english: "clothing" }, { spanish: "camisa", english: "shirt" }, { spanish: "pantalón", english: "pants" }, { spanish: "zapatos", english: "shoes" }, { spanish: "chaqueta", english: "jacket" }, { spanish: "vestido", english: "dress" }, { spanish: "sombrero", english: "hat" }, { spanish: "calcetines", english: "socks" }, { spanish: "falda", english: "skirt" }, { spanish: "abrigo", english: "coat" }, { spanish: "corbata", english: "tie" }, { spanish: "cinturón", english: "belt" }, { spanish: "gafas", english: "glasses" }, { spanish: "reloj", english: "watch" }, { spanish: "bolso", english: "bag/purse" } ],
+                "Body & Health": [ { spanish: "cabeza", english: "head" }, { spanish: "mano", english: "hand" }, { spanish: "pie", english: "foot" }, { spanish: "ojo", english: "eye" }, { spanish: "boca", english: "mouth" }, { spanish: "corazón", english: "heart" }, { spanish: "brazo", english: "arm" }, { spanish: "pierna", english: "leg" }, { spanish: "oreja", english: "ear" }, { spanish: "nariz", english: "nose" }, { spanish: "diente", english: "tooth" }, { spanish: "pelo", english: "hair" }, { spanish: "médico", english: "doctor" }, { spanish: "hospital", english: "hospital" }, { spanish: "medicina", english: "medicine" } ],
+                "Family & People": [ { spanish: "familia", english: "family" }, { spanish: "madre", english: "mother" }, { spanish: "padre", english: "father" }, { spanish: "hijo", english: "son" }, { spanish: "hija", english: "daughter" }, { spanish: "hermano", english: "brother" }, { spanish: "hermana", english: "sister" }, { spanish: "amigo", english: "friend" }, { spanish: "persona", english: "person" }, { spanish: "niño", english: "child/boy" }, { spanish: "niña", english: "girl" }, { spanish: "hombre", english: "man" }, { spanish: "mujer", english: "woman" }, { spanish: "bebé", english: "baby" }, { spanish: "abuelo", english: "grandfather" } ],
+                "Work & Education": [ { spanish: "trabajo", english: "work/job" }, { spanish: "escuela", english: "school" }, { spanish: "libro", english: "book" }, { spanish: "estudiante", english: "student" }, { spanish: "profesor", english: "teacher" }, { spanish: "oficina", english: "office" }, { spanish: "clase", english: "class" }, { spanish: "examen", english: "exam" }, { spanish: "universidad", english: "university" }, { spanish: "empresa", english: "company" } ],
+                "Time & Weather": [ { spanish: "día", english: "day" }, { spanish: "noche", english: "night" }, { spanish: "mañana", english: "morning" }, { spanish: "tarde", english: "afternoon/evening" }, { spanish: "semana", english: "week" }, { spanish: "mes", english: "month" }, { spanish: "año", english: "year" }, { spanish: "tiempo", english: "time/weather" }, { spanish: "hora", english: "hour" }, { spanish: "minuto", english: "minute" }, { spanish: "sol", english: "sun" }, { spanish: "lluvia", english: "rain" }, { spanish: "viento", english: "wind" }, { spanish: "nube", english: "cloud" }, { spanish: "frío", english: "cold" } ],
+                "Sports & Activities": [ { spanish: "deporte", english: "sport" }, { spanish: "gimnasio", english: "gym" }, { spanish: "ejercicio", english: "exercise" }, { spanish: "bicicleta", english: "bicycle" }, { spanish: "pelota", english: "ball" }, { spanish: "piscina", english: "swimming pool" }, { spanish: "fútbol", english: "soccer/football" }, { spanish: "tenis", english: "tennis" }, { spanish: "partido", english: "game/match" }, { spanish: "equipo", english: "team" }, { spanish: "jugador", english: "player" }, { spanish: "música", english: "music" }, { spanish: "baile", english: "dance" }, { spanish: "cine", english: "cinema" }, { spanish: "película", english: "movie" } ],
+                "Daily Life & Objects": [ { spanish: "dinero", english: "money" }, { spanish: "precio", english: "price" }, { spanish: "tienda", english: "store" }, { spanish: "mercado", english: "market" }, { spanish: "banco", english: "bank" }, { spanish: "calle", english: "street" }, { spanish: "número", english: "number" }, { spanish: "color", english: "color" }, { spanish: "animal", english: "animal" }, { spanish: "perro", english: "dog" }, { spanish: "gato", english: "cat" }, { spanish: "problema", english: "problem" }, { spanish: "pregunta", english: "question" }, { spanish: "respuesta", english: "answer" }, { spanish: "cosa", english: "thing" } ]
+            };
+            const allDataSets = { ...baseVerbSets, ...baseNounSets };
 
+            // --- STATE MANAGEMENT ---
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isFlipped, setIsFlipped] = useState(false);
             const [mode, setMode] = useState('spanish-to-english');
+            const [activeTab, setActiveTab] = useState('verbs'); // 'verbs' or 'nouns'
             const [activeSets, setActiveSets] = useState({ "Essential Basics": true });
-            const [shuffledVerbs, setShuffledVerbs] = useState([]);
+            const [shuffledCards, setShuffledCards] = useState([]);
             const [studiedCards, setStudiedCards] = useState(new Set());
             const [touchStart, setTouchStart] = useState(null);
             const [touchEnd, setTouchEnd] = useState(null);
 
-            const activeVerbs = useMemo(() => {
-                const allVerbs = Object.keys(activeSets).reduce((acc, setName) => {
-                    if (activeSets[setName]) {
-                        return acc.concat(baseVerbSets[setName]);
+            // --- MEMOIZED CALCULATIONS ---
+            const activeCards = useMemo(() => {
+                const allSelectedCards = Object.keys(activeSets).reduce((acc, setName) => {
+                    if (activeSets[setName] && allDataSets[setName]) {
+                        const setType = baseVerbSets[setName] ? 'verb' : 'noun';
+                        const cardsWithType = allDataSets[setName].map(card => ({ ...card, type: setType }));
+                        return acc.concat(cardsWithType);
                     }
                     return acc;
                 }, []);
-                // Simple deduplication based on the Spanish verb
-                const uniqueVerbs = allVerbs.filter((verb, index, self) =>
-                    index === self.findIndex((v) => v.spanish === verb.spanish)
+
+                // Deduplicate based on the Spanish word to prevent errors if sets overlap
+                const uniqueCards = allSelectedCards.filter((card, index, self) =>
+                    index === self.findIndex((c) => c.spanish === card.spanish)
                 );
-                return uniqueVerbs;
+                return uniqueCards;
             }, [activeSets]);
 
+            // --- HELPER FUNCTIONS ---
             function shuffle(array) {
                 const newArray = [...array];
                 for (let i = newArray.length - 1; i > 0; i--) {
@@ -218,34 +135,27 @@
                 return newArray;
             };
 
+            // --- EFFECTS ---
             useEffect(() => {
-                setShuffledVerbs(shuffle(activeVerbs));
+                setShuffledCards(shuffle(activeCards));
                 setCurrentIndex(0);
                 setIsFlipped(false);
                 setStudiedCards(new Set());
-            }, [activeVerbs]);
+            }, [activeCards]);
             
+            // --- EVENT HANDLERS ---
             const minSwipeDistance = 50;
-
-            const onTouchStart = (e) => {
-                setTouchEnd(null);
-                setTouchStart(e.targetTouches[0].clientX);
-            };
-
+            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
             const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
-
             const onTouchEnd = () => {
                 if (!touchStart || !touchEnd) return;
                 const distance = touchStart - touchEnd;
-                const isLeftSwipe = distance > minSwipeDistance;
-                const isRightSwipe = distance < -minSwipeDistance;
-
-                if (isLeftSwipe) handleNext();
-                if (isRightSwipe) handlePrevious();
+                if (distance > minSwipeDistance) handleNext();
+                if (distance < -minSwipeDistance) handlePrevious();
             };
             
             const handleFlip = () => {
-                if(shuffledVerbs.length === 0) return;
+                if(shuffledCards.length === 0) return;
                 setIsFlipped(prevFlipped => {
                     if (!prevFlipped) {
                         setStudiedCards(prev => new Set(prev).add(currentIndex));
@@ -253,84 +163,68 @@
                     return !prevFlipped;
                 });
             };
-
-            const handleCardClick = (e) => {
-                if (touchStart && touchEnd) {
-                    const distance = Math.abs(touchStart - touchEnd);
-                    if (distance < minSwipeDistance) {
-                        handleFlip();
-                    }
-                } else {
-                    handleFlip();
-                }
-            };
-
-            const handleKeyPress = (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleFlip();
-                }
-            };
             
-            const handleShuffle = () => {
-                setShuffledVerbs(shuffle(activeVerbs));
-                setCurrentIndex(0);
-                setIsFlipped(false);
-                setStudiedCards(new Set());
+            const handleCardClick = (e) => {
+                if (touchStart && touchEnd && Math.abs(touchStart - touchEnd) >= minSwipeDistance) return;
+                handleFlip();
             };
+
+            const handleKeyPress = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(); } };
+            const handleShuffle = () => { setShuffledCards(shuffle(activeCards)); setCurrentIndex(0); setIsFlipped(false); setStudiedCards(new Set()); };
+            const handleNext = () => { if (currentIndex < shuffledCards.length - 1) { setCurrentIndex(currentIndex + 1); setIsFlipped(false); } };
+            const handlePrevious = () => { if (currentIndex > 0) { setCurrentIndex(currentIndex - 1); setIsFlipped(false); } };
+            const handleModeToggle = () => { setMode(prev => prev === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english'); setIsFlipped(false); };
+            const resetDeck = () => { setCurrentIndex(0); setIsFlipped(false); setStudiedCards(new Set()); };
 
             const handleSetToggle = (setName) => {
-                setActiveSets(prev => ({
-                    ...prev,
-                    [setName]: !prev[setName]
-                }));
+                setActiveSets(prev => ({ ...prev, [setName]: !prev[setName] }));
             };
 
-            const handleSelectAll = () => {
-                const allActive = Object.keys(baseVerbSets).reduce((acc, setName) => {
-                    acc[setName] = true;
-                    return acc;
-                }, {});
-                setActiveSets(allActive);
+            const handleSelectAll = (type) => {
+                const setsToSelect = type === 'verbs' ? baseVerbSets : baseNounSets;
+                const updatedSets = { ...activeSets };
+                Object.keys(setsToSelect).forEach(setName => { updatedSets[setName] = true; });
+                setActiveSets(updatedSets);
             };
     
-            const handleDeselectAll = () => {
-                // Keep the state object structure but set all values to false
-                const allInactive = Object.keys(baseVerbSets).reduce((acc, setName) => {
-                    acc[setName] = false;
-                    return acc;
-                }, {});
-                setActiveSets(allInactive);
+            const handleDeselectAll = (type) => {
+                const setsToDeselect = type === 'verbs' ? baseVerbSets : baseNounSets;
+                const updatedSets = { ...activeSets };
+                Object.keys(setsToDeselect).forEach(setName => { updatedSets[setName] = false; });
+                setActiveSets(updatedSets);
             };
 
-            const handleNext = () => {
-                if (currentIndex < shuffledVerbs.length - 1) {
-                    setCurrentIndex(currentIndex + 1);
-                    setIsFlipped(false);
-                }
-            };
-
-            const handlePrevious = () => {
-                if (currentIndex > 0) {
-                    setCurrentIndex(currentIndex - 1);
-                    setIsFlipped(false);
-                }
-            };
-
-            const handleModeToggle = () => {
-                setMode(mode === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english');
-                setIsFlipped(false);
-            };
-            
-            const resetDeck = () => {
-                setCurrentIndex(0);
-                setIsFlipped(false);
-                setStudiedCards(new Set());
-            };
-
-            const currentVerb = shuffledVerbs[currentIndex];
+            // --- RENDER VARIABLES ---
+            const currentCard = shuffledCards[currentIndex];
             const totalStudied = studiedCards.size;
-            const progress = shuffledVerbs.length > 0 ? ((totalStudied / shuffledVerbs.length) * 100).toFixed(1) : 0;
+            const progress = shuffledCards.length > 0 ? ((totalStudied / shuffledCards.length) * 100).toFixed(1) : 0;
+
+            const CheckboxGrid = ({ sets, type }) => (
+                 <div className="mb-6 bg-white/50 p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-3">
+                        <label className="text-sm font-medium text-gray-800">
+                            Choose {type === 'verbs' ? 'Verb' : 'Noun'} Sets:
+                        </label>
+                        <div className="flex gap-2">
+                            <button onClick={() => handleSelectAll(type)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
+                            <button onClick={() => handleDeselectAll(type)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {Object.keys(sets).map((setName) => (
+                            <label key={setName} className="flex items-center space-x-2 cursor-pointer p-2 rounded-md hover:bg-indigo-100/50">
+                                <input
+                                    type="checkbox"
+                                    checked={!!activeSets[setName]}
+                                    onChange={() => handleSetToggle(setName)}
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <span className="text-sm text-gray-700 select-none">{setName}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            );
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex flex-col">
@@ -339,100 +233,69 @@
                         <header className="text-center mb-6">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <BookIcon />
-                                <h1 className="text-2xl font-bold text-gray-800">Spanish Verbs</h1>
+                                <h1 className="text-2xl font-bold text-gray-800">Spanish Flashcards</h1>
                             </div>
-                            <p className="text-sm text-gray-600">Learn essential Spanish verbs by category</p>
+                            <p className="text-sm text-gray-600">Select categories of verbs and nouns to study</p>
                         </header>
 
-                        {/* Progress Bar */}
+                        {/* Progress Bar & Top Controls */}
                         <div className="mb-4">
                             <div className="flex justify-between text-sm text-gray-600 mb-1">
                                 <span>Progress</span>
-                                <span>{totalStudied}/{shuffledVerbs.length} ({progress}%)</span>
+                                <span>{totalStudied}/{shuffledCards.length} ({progress}%)</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
-                                    className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                                    style={{ width: `${progress}%` }}
-                                ></div>
+                                <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
                             </div>
                         </div>
-
-                        {/* Controls */}
                         <div className="flex justify-between items-center mb-6">
-                            <button
-                                onClick={handleModeToggle}
-                                className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                            >
+                            <button onClick={handleModeToggle} className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                                 {mode === 'spanish-to-english' ? 'ES → EN' : 'EN → ES'}
                             </button>
-                            
-                            <div className="text-sm text-gray-600" aria-live="polite">
-                                {shuffledVerbs.length > 0 ? `${currentIndex + 1} / ${shuffledVerbs.length}` : '0 / 0'}
-                            </div>
-                            
-                            <button
-                                onClick={handleShuffle}
-                                disabled={shuffledVerbs.length === 0}
-                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                aria-label="Shuffle deck"
-                            >
-                                <ShuffleIcon />
-                            </button>
+                            <div className="text-sm text-gray-600" aria-live="polite">{shuffledCards.length > 0 ? `${currentIndex + 1} / ${shuffledCards.length}` : '0 / 0'}</div>
+                            <button onClick={handleShuffle} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Shuffle deck"><ShuffleIcon /></button>
                         </div>
 
                         {/* Flashcard */}
                         <div 
                             className="relative w-full h-80 mb-6 cursor-pointer perspective-1000"
-                            onClick={handleCardClick}
-                            onTouchStart={onTouchStart}
-                            onTouchMove={onTouchMove}
-                            onTouchEnd={onTouchEnd}
-                            onKeyPress={handleKeyPress}
-                            role="button"
-                            tabIndex="0"
-                            aria-label={`Flashcard: ${isFlipped && currentVerb ? currentVerb.english : (currentVerb ? currentVerb.spanish : '')}. Tap to flip.`}
+                            onClick={handleCardClick} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} onKeyPress={handleKeyPress}
+                            role="button" tabIndex="0" aria-label="Flashcard"
                         >
-                            {currentVerb ? (
+                            {currentCard ? (
                                 <div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                                    {/* Front of card */}
+                                    {/* Front */}
                                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4">
-                                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">
-                                            {mode === 'spanish-to-english' ? 'Español' : 'English'}
-                                        </div>
-                                        <div className="text-3xl font-bold text-gray-800 text-center mb-3">
-                                            {mode === 'spanish-to-english' ? currentVerb.spanish : currentVerb.english}
-                                        </div>
+                                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">{mode === 'spanish-to-english' ? 'Español' : 'English'}</div>
+                                        <div className="text-3xl font-bold text-gray-800 text-center mb-3">{mode === 'spanish-to-english' ? currentCard.spanish : currentCard.english}</div>
                                         <div className="absolute bottom-4 text-xs text-gray-400">Tap or swipe</div>
                                     </div>
                                     
-                                    {/* Back of card */}
+                                    {/* Back */}
                                     <div className="absolute inset-0 w-full h-full bg-indigo-50 rounded-xl shadow-lg border-2 border-indigo-200 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-4">
-                                        <div className="text-xs uppercase tracking-wide text-indigo-600 mb-2">
-                                            {mode === 'spanish-to-english' ? 'English' : 'Español'}
-                                        </div>
-                                        <div className="text-3xl font-bold text-indigo-800 text-center mb-4">
-                                            {mode === 'spanish-to-english' ? currentVerb.english : currentVerb.spanish}
-                                        </div>
+                                        <div className="text-xs uppercase tracking-wide text-indigo-600 mb-2">{mode === 'spanish-to-english' ? 'English' : 'Español'}</div>
+                                        <div className="text-3xl font-bold text-indigo-800 text-center mb-4">{mode === 'spanish-to-english' ? currentCard.english : currentCard.spanish}</div>
                                         
-                                        <div className="w-full max-w-xs">
-                                            <div className="text-xs text-indigo-600 text-center mb-2">Present Tense Conjugations</div>
-                                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                                                {[ "yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas" ].map((pronoun, i) => (
-                                                    <React.Fragment key={pronoun}>
-                                                        <div className="text-right text-indigo-700">{pronoun}</div>
-                                                        <div className="font-medium text-indigo-900">{currentVerb.conjugations[i]}</div>
-                                                    </React.Fragment>
-                                                ))}
+                                        {currentCard.type === 'verb' && (
+                                            <div className="w-full max-w-xs">
+                                                <div className="text-xs text-indigo-600 text-center mb-2">Present Tense Conjugations</div>
+                                                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                                                    {[ "yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas" ].map((pronoun, i) => (
+                                                        <React.Fragment key={pronoun}>
+                                                            <div className="text-right text-indigo-700">{pronoun}</div>
+                                                            <div className="font-medium text-indigo-900">{currentCard.conjugations[i]}</div>
+                                                        </React.Fragment>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                         <div className="absolute bottom-4 text-xs text-indigo-400">Tap or swipe</div>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center p-4">
-                                    <div className="text-lg text-gray-600 font-medium">No verb sets selected.</div>
-                                    <div className="text-sm text-gray-500 mt-2">Please select one or more sets above to begin.</div>
+                                    <div className="text-lg text-gray-600 font-medium">No card sets selected.</div>
+                                    <div className="text-sm text-gray-500 mt-2">Use the tabs below to select one or more sets.</div>
                                 </div>
                             )}
                         </div>
@@ -440,61 +303,25 @@
                         {/* Pushes content above it up */}
                         <div className="flex-grow"></div>
 
-                        {/* NEW: Set Toggles - Moved and restyled */}
-                        <div className="mb-6 bg-white/50 p-4 rounded-lg border border-gray-200 shadow-sm">
-                            <div className="flex justify-between items-center mb-3">
-                                <label className="text-sm font-medium text-gray-800">
-                                    Choose Verb Sets:
-                                </label>
-                                <div className="flex gap-2">
-                                    <button onClick={handleSelectAll} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
-                                    <button onClick={handleDeselectAll} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
-                                </div>
+                        {/* --- TABS and SELECTION AREA --- */}
+                        <div>
+                            <div className="border-b border-gray-200">
+                                <nav className="-mb-px flex justify-center gap-6" aria-label="Tabs">
+                                    <button onClick={() => setActiveTab('verbs')} className={`${activeTab === 'verbs' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Verbs</button>
+                                    <button onClick={() => setActiveTab('nouns')} className={`${activeTab === 'nouns' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Nouns</button>
+                                </nav>
                             </div>
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                                {Object.keys(baseVerbSets).map((setName) => (
-                                    <label key={setName} className="flex items-center space-x-2 cursor-pointer p-2 rounded-md hover:bg-indigo-100/50">
-                                        <input
-                                            type="checkbox"
-                                            checked={!!activeSets[setName]}
-                                            onChange={() => handleSetToggle(setName)}
-                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                        />
-                                        <span className="text-sm text-gray-700 select-none">{setName}</span>
-                                    </label>
-                                ))}
+                            <div className="pt-5">
+                                {activeTab === 'verbs' && <CheckboxGrid sets={baseVerbSets} type="verbs" />}
+                                {activeTab === 'nouns' && <CheckboxGrid sets={baseNounSets} type="nouns" />}
                             </div>
                         </div>
 
                         {/* Navigation */}
-                        <div className="flex justify-between items-center mb-4">
-                            <button
-                                onClick={handlePrevious}
-                                disabled={currentIndex === 0 || shuffledVerbs.length === 0}
-                                className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                            >
-                                <ChevronLeftIcon />
-                                Previous
-                            </button>
-                            
-                            <button
-                                onClick={resetDeck}
-                                disabled={shuffledVerbs.length === 0}
-                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Reset to beginning"
-                                aria-label="Reset deck to beginning"
-                            >
-                                <RefreshIcon />
-                            </button>
-                            
-                            <button
-                                onClick={handleNext}
-                                disabled={shuffledVerbs.length === 0 || currentIndex === shuffledVerbs.length - 1}
-                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors"
-                            >
-                                Next
-                                <ChevronRightIcon />
-                            </button>
+                        <div className="flex justify-between items-center my-4">
+                            <button onClick={handlePrevious} disabled={currentIndex === 0 || shuffledCards.length === 0} className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"><ChevronLeftIcon />Previous</button>
+                            <button onClick={resetDeck} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Reset to beginning" aria-label="Reset deck to beginning"><RefreshIcon /></button>
+                            <button onClick={handleNext} disabled={shuffledCards.length === 0 || currentIndex === shuffledCards.length - 1} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors">Next<ChevronRightIcon /></button>
                         </div>
                     </div>
                 </div>
@@ -502,7 +329,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(SpanishVerbFlashcards));
+        root.render(React.createElement(SpanishFlashcards));
     </script>
 </body>
 </html>
