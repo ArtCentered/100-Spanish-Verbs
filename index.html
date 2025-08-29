@@ -37,7 +37,7 @@
         // --- Icon Components ---
         const BookIcon = () => (
             <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.24C5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
         );
         const ChevronLeftIcon = () => (
@@ -182,11 +182,9 @@
                 const loadVoices = () => {
                     setVoices(window.speechSynthesis.getVoices());
                 };
-                // The voices are loaded asynchronously. We need to listen for the 'voiceschanged' event.
                 if ('onvoiceschanged' in window.speechSynthesis) {
                     window.speechSynthesis.onvoiceschanged = loadVoices;
                 }
-                // Also call it directly in case the voices are already loaded.
                 loadVoices();
             }, []);
 
@@ -198,16 +196,6 @@
             }, [activeCards]);
             
             // --- EVENT HANDLERS ---
-            const minSwipeDistance = 50;
-            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
-            const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
-            const onTouchEnd = () => {
-                if (!touchStart || !touchEnd) return;
-                const distance = touchStart - touchEnd;
-                if (distance > minSwipeDistance) handleNext();
-                if (distance < -minSwipeDistance) handlePrevious();
-            };
-            
             const handleFlip = () => {
                 if(shuffledCards.length === 0) return;
                 setIsFlipped(prevFlipped => {
@@ -217,18 +205,13 @@
                     return !prevFlipped;
                 });
             };
-            
-            const handleCardClick = (e) => {
-                if (touchStart && touchEnd && Math.abs(touchStart - touchEnd) >= minSwipeDistance) return;
-                handleFlip();
-            };
 
             const handleSpeakerClick = () => {
                 if (currentCard) {
                     speakText(currentCard.spanish);
                 }
             };
-
+            
             const handleKeyPress = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(); } };
             const handleShuffle = () => { setShuffledCards(shuffle(activeCards)); setCurrentIndex(0); setIsFlipped(false); setStudiedCards(new Set()); };
             const handleNext = () => { if (currentIndex < shuffledCards.length - 1) { setCurrentIndex(currentIndex + 1); setIsFlipped(false); } };
@@ -261,6 +244,39 @@
                 Object.keys(setsToDeselect).forEach(setName => { updatedSets[setName] = false; });
                 setActiveSets(updatedSets);
             };
+
+            // --- Touch Handlers for Tap/Swipe ---
+            const minSwipeDistance = 50;
+            const onTouchStart = (e) => {
+                setTouchEnd(null);
+                setTouchStart(e.targetTouches[0].clientX);
+            };
+            const onTouchMove = (e) => {
+                setTouchEnd(e.targetTouches[0].clientX);
+            };
+            const onTouchEnd = (e) => {
+                if (!touchStart) return;
+
+                const isSwipe = touchEnd && Math.abs(touchStart - touchEnd) > minSwipeDistance;
+
+                if (isSwipe) {
+                    const distance = touchStart - touchEnd;
+                    if (distance > 0) { // Swiped left
+                        handleNext();
+                    } else { // Swiped right
+                        handlePrevious();
+                    }
+                } else {
+                    // It's a tap. Prevent the delayed onClick and flip immediately.
+                    e.preventDefault();
+                    handleFlip();
+                }
+
+                // Reset touch state for the next interaction
+                setTouchStart(null);
+                setTouchEnd(null);
+            };
+
 
             // --- RENDER VARIABLES ---
             const currentCard = shuffledCards[currentIndex];
@@ -327,8 +343,14 @@
                         {/* Flashcard */}
                         <div 
                             className="relative w-full h-80 cursor-pointer perspective-1000"
-                            onClick={handleCardClick} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} onKeyPress={handleKeyPress}
-                            role="button" tabIndex="0" aria-label="Flashcard"
+                            onClick={handleFlip}
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={onTouchEnd}
+                            onKeyPress={handleKeyPress}
+                            role="button" 
+                            tabIndex="0" 
+                            aria-label="Flashcard"
                         >
                             {currentCard ? (
                                 <div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
