@@ -32,7 +32,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useMemo } = React;
 
         // --- Icon Components (unchanged) ---
         const BookIcon = () => (
@@ -63,7 +63,6 @@
 
         // --- Main App Component ---
         const SpanishVerbFlashcards = () => {
-            // **FIX**: Defined the 10 base sets of verbs first.
             const baseVerbSets = {
                 "Essential Basics": [
                     { spanish: "ser", english: "to be (permanent)", conjugations: ["soy", "eres", "es", "somos", "sois", "son"] },
@@ -157,7 +156,7 @@
                     { spanish: "recibir", english: "to receive", conjugations: ["recibo", "recibes", "recibe", "recibimos", "recibís", "reciben"] },
                     { spanish: "pagar", english: "to pay", conjugations: ["pago", "pagas", "paga", "pagamos", "pagáis", "pagan"] },
                     { spanish: "vender", english: "to sell", conjugations: ["vendo", "vendes", "vende", "vendemos", "vendéis", "venden"] },
-                    { spanish: "crear", english: "to create", conjugations: ["creo", "creas", "crea", "creamos", "creáis", "crean"] }, // REPLACED 'vivir'
+                    { spanish: "crear", english: "to create", conjugations: ["creo", "creas", "crea", "creamos", "creáis", "crean"] }, 
                     { spanish: "morir", english: "to die", conjugations: ["muero", "mueres", "muere", "morimos", "morís", "mueren"] },
                     { spanish: "nacer", english: "to be born", conjugations: ["nazco", "naces", "nace", "nacemos", "nacéis", "nacen"] }
                 ],
@@ -171,36 +170,44 @@
                     { spanish: "pedir", english: "to ask for/order", conjugations: ["pido", "pides", "pide", "pedimos", "pedís", "piden"] },
                     { spanish: "caer", english: "to fall", conjugations: ["caigo", "caes", "cae", "caemos", "caéis", "caen"] },
                     { spanish: "tratar", english: "to try/treat", conjugations: ["trato", "tratas", "trata", "tratamos", "tratáis", "tratan"] },
-                    { spanish: "gastar", english: "to spend (money)", conjugations: ["gasto", "gastas", "gasta", "gastamos", "gastáis", "gastan"] } // REPLACED 'ocurrir'
+                    { spanish: "gastar", english: "to spend (money)", conjugations: ["gasto", "gastas", "gasta", "gastamos", "gastáis", "gastan"] }
                 ],
                 "General Use Verbs 2": [
                     { spanish: "existir", english: "to exist", conjugations: ["existo", "existes", "existe", "existimos", "existís", "existen"] },
                     { spanish: "producir", english: "to produce", conjugations: ["produzco", "produces", "produce", "producimos", "producís", "producen"] },
-                    { spanish: "ocurrir", english: "to happen", conjugations: ["ocurro", "ocurres", "ocurre", "ocurrimos", "ocurrís", "ocurren"] }, // Kept one 'ocurrir'
+                    { spanish: "ocurrir", english: "to happen", conjugations: ["ocurro", "ocurres", "ocurre", "ocurrimos", "ocurrís", "ocurren"] },
                     { spanish: "lograr", english: "to achieve/manage", conjugations: ["logro", "logras", "logra", "logramos", "lográis", "logran"] },
-                    { spanish: "descubrir", english: "to discover", conjugations: ["descubro", "descubres", "descubre", "descubrimos", "descubrís", "descubren"] }, // REPLACED a duplicate
+                    { spanish: "descubrir", english: "to discover", conjugations: ["descubro", "descubres", "descubre", "descubrimos", "descubrís", "descubren"] },
                     { spanish: "mantener", english: "to maintain", conjugations: ["mantengo", "mantienes", "mantiene", "mantenemos", "mantenéis", "mantienen"] },
                     { spanish: "permitir", english: "to permit/allow", conjugations: ["permito", "permites", "permite", "permitimos", "permitís", "permiten"] },
                     { spanish: "ofrecer", english: "to offer", conjugations: ["ofrezco", "ofreces", "ofrece", "ofrecemos", "ofrecéis", "ofrecen"] },
                     { spanish: "resultar", english: "to turn out/result", conjugations: ["resulto", "resultas", "resulta", "resultamos", "resultáis", "resultan"] },
-                    { spanish: "sugerir", english: "to suggest", conjugations: ["sugiero", "sugieres", "sugiere", "sugerimos", "sugerís", "sugieren"] } // REPLACED 'recordar'
+                    { spanish: "sugerir", english: "to suggest", conjugations: ["sugiero", "sugieres", "sugiere", "sugerimos", "sugerís", "sugieren"] }
                 ]
-            };
-            
-            // **FIX**: Safely combines the base sets into the final object for the dropdown menu.
-            const verbSets = {
-                ...baseVerbSets,
-                "All 100 Verbs": Object.values(baseVerbSets).flat()
             };
 
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isFlipped, setIsFlipped] = useState(false);
             const [mode, setMode] = useState('spanish-to-english');
-            const [selectedSet, setSelectedSet] = useState('Essential Basics');
-            const [shuffledVerbs, setShuffledVerbs] = useState(() => shuffle(verbSets['Essential Basics']));
+            const [activeSets, setActiveSets] = useState({ "Essential Basics": true });
+            const [shuffledVerbs, setShuffledVerbs] = useState([]);
             const [studiedCards, setStudiedCards] = useState(new Set());
             const [touchStart, setTouchStart] = useState(null);
             const [touchEnd, setTouchEnd] = useState(null);
+
+            const activeVerbs = useMemo(() => {
+                const allVerbs = Object.keys(activeSets).reduce((acc, setName) => {
+                    if (activeSets[setName]) {
+                        return acc.concat(baseVerbSets[setName]);
+                    }
+                    return acc;
+                }, []);
+                // Simple deduplication based on the Spanish verb
+                const uniqueVerbs = allVerbs.filter((verb, index, self) =>
+                    index === self.findIndex((v) => v.spanish === verb.spanish)
+                );
+                return uniqueVerbs;
+            }, [activeSets]);
 
             function shuffle(array) {
                 const newArray = [...array];
@@ -211,6 +218,13 @@
                 return newArray;
             };
 
+            useEffect(() => {
+                setShuffledVerbs(shuffle(activeVerbs));
+                setCurrentIndex(0);
+                setIsFlipped(false);
+                setStudiedCards(new Set());
+            }, [activeVerbs]);
+            
             const minSwipeDistance = 50;
 
             const onTouchStart = (e) => {
@@ -231,6 +245,7 @@
             };
             
             const handleFlip = () => {
+                if(shuffledVerbs.length === 0) return;
                 setIsFlipped(prevFlipped => {
                     if (!prevFlipped) {
                         setStudiedCards(prev => new Set(prev).add(currentIndex));
@@ -258,20 +273,17 @@
             };
             
             const handleShuffle = () => {
-                const currentSet = verbSets[selectedSet];
-                setShuffledVerbs(shuffle(currentSet));
+                setShuffledVerbs(shuffle(activeVerbs));
                 setCurrentIndex(0);
                 setIsFlipped(false);
                 setStudiedCards(new Set());
             };
 
-            const handleSetChange = (setName) => {
-                setSelectedSet(setName);
-                const newSet = verbSets[setName];
-                setShuffledVerbs(shuffle(newSet));
-                setCurrentIndex(0);
-                setIsFlipped(false);
-                setStudiedCards(new Set());
+            const handleSetToggle = (setName) => {
+                setActiveSets(prev => ({
+                    ...prev,
+                    [setName]: !prev[setName]
+                }));
             };
 
             const handleNext = () => {
@@ -315,23 +327,26 @@
                             <p className="text-sm text-gray-600">Learn essential Spanish verbs by category</p>
                         </header>
 
-                        {/* Set Selector */}
+                        {/* Set Toggles */}
                         <div className="mb-4">
-                            <label htmlFor="set-selector" className="block text-sm font-medium text-gray-700 mb-2">
-                                Choose a verb set:
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Choose verb sets to study:
                             </label>
-                            <select
-                                id="set-selector"
-                                value={selectedSet}
-                                onChange={(e) => handleSetChange(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                                {Object.keys(verbSets).map((setName) => (
-                                    <option key={setName} value={setName}>
+                            <div className="flex flex-wrap gap-2">
+                                {Object.keys(baseVerbSets).map((setName) => (
+                                    <button
+                                        key={setName}
+                                        onClick={() => handleSetToggle(setName)}
+                                        className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                                            activeSets[setName]
+                                                ? 'bg-indigo-600 text-white shadow'
+                                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                                        }`}
+                                    >
                                         {setName}
-                                    </option>
+                                    </button>
                                 ))}
-                            </select>
+                            </div>
                         </div>
 
                         {/* Progress Bar */}
@@ -358,12 +373,13 @@
                             </button>
                             
                             <div className="text-sm text-gray-600" aria-live="polite">
-                                {currentIndex + 1} / {shuffledVerbs.length}
+                                {shuffledVerbs.length > 0 ? `${currentIndex + 1} / ${shuffledVerbs.length}` : '0 / 0'}
                             </div>
                             
                             <button
                                 onClick={handleShuffle}
-                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors"
+                                disabled={shuffledVerbs.length === 0}
+                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 aria-label="Shuffle deck"
                             >
                                 <ShuffleIcon />
@@ -382,7 +398,7 @@
                             tabIndex="0"
                             aria-label={`Flashcard: ${isFlipped && currentVerb ? currentVerb.english : (currentVerb ? currentVerb.spanish : '')}. Tap to flip.`}
                         >
-                            {currentVerb && (
+                            {currentVerb ? (
                                 <div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                                     {/* Front of card */}
                                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4">
@@ -418,6 +434,11 @@
                                         <div className="absolute bottom-4 text-xs text-indigo-400">Tap or swipe</div>
                                     </div>
                                 </div>
+                            ) : (
+                                <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center p-4">
+                                    <div className="text-lg text-gray-600 font-medium">No verb sets selected.</div>
+                                    <div className="text-sm text-gray-500 mt-2">Please select one or more sets above to begin.</div>
+                                </div>
                             )}
                         </div>
 
@@ -425,7 +446,7 @@
                         <div className="flex justify-between items-center mb-4">
                             <button
                                 onClick={handlePrevious}
-                                disabled={currentIndex === 0}
+                                disabled={currentIndex === 0 || shuffledVerbs.length === 0}
                                 className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                             >
                                 <ChevronLeftIcon />
@@ -434,7 +455,8 @@
                             
                             <button
                                 onClick={resetDeck}
-                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors"
+                                disabled={shuffledVerbs.length === 0}
+                                className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Reset to beginning"
                                 aria-label="Reset deck to beginning"
                             >
@@ -443,7 +465,7 @@
                             
                             <button
                                 onClick={handleNext}
-                                disabled={!shuffledVerbs || currentIndex === shuffledVerbs.length - 1}
+                                disabled={shuffledVerbs.length === 0 || currentIndex === shuffledVerbs.length - 1}
                                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors"
                             >
                                 Next
