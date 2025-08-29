@@ -353,4 +353,20 @@
                         </div>
                         
                         <DeckControls 
-                            handlers={{ handlePrevious, resetDeckProgress, handleSpeakerC
+                            handlers={{ handlePrevious, resetDeckProgress, handleSpeakerClick, handleToggleRemembered, handleNext }}
+                            state={{ deckSize: shuffledCards.length, totalPotentialCards: totalPotentialCards.length, isCardPresent: !!currentCard, isRemembered }}
+                        />
+
+                        <div className="flex-grow"></div>
+
+                        <CategoryTabs activeTab={activeTab} setActiveTab={setActiveTab} activeSets={activeSets} handleSetToggle={handleSetToggle} />
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<SpanishFlashcards />);
+    </script>
+</body>
+</html>
