@@ -37,7 +37,7 @@
         // --- Icon Components ---
         const BookIcon = () => (
             <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.24C5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
         );
         const ChevronLeftIcon = () => (
@@ -65,6 +65,12 @@
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
             </svg>
         );
+        const CheckIcon = () => (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+        );
+
 
         // --- DATA SETS (Moved outside component for performance) ---
         const baseVerbSets = {
@@ -112,23 +118,36 @@
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isFlipped, setIsFlipped] = useState(false);
             const [mode, setMode] = useState('spanish-to-english');
-            const [activeTab, setActiveTab] = useState('verbs'); // 'verbs', 'nouns', or 'phrases'
+            const [activeTab, setActiveTab] = useState('verbs');
             const [activeSets, setActiveSets] = useState({ "Essential Being & Having": true });
             const [shuffledCards, setShuffledCards] = useState([]);
-            const [studiedCards, setStudiedCards] = useState(new Set());
             const [touchStart, setTouchStart] = useState(null);
             const [touchEnd, setTouchEnd] = useState(null);
             const [voices, setVoices] = useState([]);
+            const [rememberedCards, setRememberedCards] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('rememberedSpanishCards');
+                    return saved ? new Set(JSON.parse(saved)) : new Set();
+                } catch (error) {
+                    console.error("Could not load remembered cards:", error);
+                    return new Set();
+                }
+            });
+
+            // --- PERSISTENCE EFFECT ---
+            useEffect(() => {
+                localStorage.setItem('rememberedSpanishCards', JSON.stringify(Array.from(rememberedCards)));
+            }, [rememberedCards]);
 
             // --- MEMOIZED CALCULATIONS ---
-            const activeCards = useMemo(() => {
-                const getSetType = (setName) => {
-                    if (baseVerbSets[setName]) return 'verb';
-                    if (baseNounSets[setName]) return 'noun';
-                    if (basePhraseSets[setName]) return 'phrase';
-                    return null;
-                };
+            const getSetType = (setName) => {
+                if (baseVerbSets[setName]) return 'verb';
+                if (baseNounSets[setName]) return 'noun';
+                if (basePhraseSets[setName]) return 'phrase';
+                return null;
+            };
 
+            const totalPotentialCards = useMemo(() => {
                 const allSelectedCards = Object.keys(activeSets).reduce((acc, setName) => {
                     if (activeSets[setName] && allDataSets[setName]) {
                         const setType = getSetType(setName);
@@ -137,12 +156,15 @@
                     }
                     return acc;
                 }, []);
-
-                const uniqueCards = allSelectedCards.filter((card, index, self) =>
+                // Ensure uniqueness
+                return allSelectedCards.filter((card, index, self) =>
                     index === self.findIndex((c) => c.spanish === card.spanish)
                 );
-                return uniqueCards;
             }, [activeSets]);
+
+            const activeCards = useMemo(() => {
+                return totalPotentialCards.filter(card => !rememberedCards.has(card.spanish));
+            }, [totalPotentialCards, rememberedCards]);
 
             // --- HELPER FUNCTIONS ---
             function shuffle(array) {
@@ -155,33 +177,19 @@
             };
 
             const speakText = (text, lang = 'es-ES') => {
-                if (!('speechSynthesis' in window)) {
-                    console.log("Speech synthesis not supported.");
-                    return;
-                }
+                if (!('speechSynthesis' in window)) return;
                 window.speechSynthesis.cancel();
-                
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = lang;
-                utterance.rate = 0.8; 
-                
-                // --- VOICE SELECTION LOGIC FOR iOS ---
-                const spanishVoice = voices.find(voice => voice.lang === 'es-ES') || voices.find(voice => voice.lang.startsWith('es-'));
-                if (spanishVoice) {
-                    utterance.voice = spanishVoice;
-                }
-                // --- END OF VOICE SELECTION LOGIC ---
-
-                setTimeout(() => {
-                    window.speechSynthesis.speak(utterance);
-                }, 100);
+                utterance.rate = 0.8;
+                const spanishVoice = voices.find(v => v.lang === 'es-ES') || voices.find(v => v.lang.startsWith('es-'));
+                if (spanishVoice) utterance.voice = spanishVoice;
+                setTimeout(() => window.speechSynthesis.speak(utterance), 100);
             };
 
             // --- EFFECTS ---
             useEffect(() => {
-                const loadVoices = () => {
-                    setVoices(window.speechSynthesis.getVoices());
-                };
+                const loadVoices = () => setVoices(window.speechSynthesis.getVoices());
                 if ('onvoiceschanged' in window.speechSynthesis) {
                     window.speechSynthesis.onvoiceschanged = loadVoices;
                 }
@@ -192,117 +200,104 @@
                 setShuffledCards(shuffle(activeCards));
                 setCurrentIndex(0);
                 setIsFlipped(false);
-                setStudiedCards(new Set());
             }, [activeCards]);
             
             // --- EVENT HANDLERS ---
             const handleFlip = () => {
                 if(shuffledCards.length === 0) return;
-                setIsFlipped(prevFlipped => {
-                    if (!prevFlipped) {
-                        setStudiedCards(prev => new Set(prev).add(currentIndex));
-                    }
-                    return !prevFlipped;
-                });
+                setIsFlipped(prev => !prev);
             };
 
             const handleSpeakerClick = () => {
-                if (currentCard) {
-                    speakText(currentCard.spanish);
+                if (shuffledCards[currentIndex]) {
+                    speakText(shuffledCards[currentIndex].spanish);
+                }
+            };
+
+            const handleNext = () => {
+                if (currentIndex < shuffledCards.length - 1) {
+                    setCurrentIndex(currentIndex + 1);
+                    setIsFlipped(false);
                 }
             };
             
-            const handleKeyPress = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(); } };
-            const handleShuffle = () => { setShuffledCards(shuffle(activeCards)); setCurrentIndex(0); setIsFlipped(false); setStudiedCards(new Set()); };
-            const handleNext = () => { if (currentIndex < shuffledCards.length - 1) { setCurrentIndex(currentIndex + 1); setIsFlipped(false); } };
-            const handlePrevious = () => { if (currentIndex > 0) { setCurrentIndex(currentIndex - 1); setIsFlipped(false); } };
-            const handleModeToggle = () => { setMode(prev => prev === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english'); setIsFlipped(false); };
-            const resetDeck = () => { setCurrentIndex(0); setIsFlipped(false); setStudiedCards(new Set()); };
+            const handlePrevious = () => {
+                if (currentIndex > 0) {
+                    setCurrentIndex(currentIndex - 1);
+                    setIsFlipped(false);
+                }
+            };
+            
+            const handleMarkRemembered = () => {
+                const currentCard = shuffledCards[currentIndex];
+                if (!currentCard) return;
+                setRememberedCards(prev => new Set(prev).add(currentCard.spanish));
+            };
+
+            const resetDeck = () => {
+                const cardsToReset = totalPotentialCards.map(card => card.spanish);
+                setRememberedCards(prev => {
+                    const newSet = new Set(prev);
+                    cardsToReset.forEach(cardSpanish => newSet.delete(cardSpanish));
+                    return newSet;
+                });
+            };
 
             const handleSetToggle = (setName) => {
+                if (activeSets[setName]) { // If currently active and about to be deselected
+                    const cardsInSet = allDataSets[setName].map(c => c.spanish);
+                    setRememberedCards(prev => {
+                        const newSet = new Set(prev);
+                        cardsInSet.forEach(cardSpanish => newSet.delete(cardSpanish));
+                        return newSet;
+                    });
+                }
                 setActiveSets(prev => ({ ...prev, [setName]: !prev[setName] }));
             };
 
-            const handleSelectAll = (type) => {
-                let setsToSelect;
-                if (type === 'verbs') setsToSelect = baseVerbSets;
-                else if (type === 'nouns') setsToSelect = baseNounSets;
-                else setsToSelect = basePhraseSets;
-                
-                const updatedSets = { ...activeSets };
-                Object.keys(setsToSelect).forEach(setName => { updatedSets[setName] = true; });
-                setActiveSets(updatedSets);
-            };
-    
-            const handleDeselectAll = (type) => {
-                let setsToDeselect;
-                if (type === 'verbs') setsToDeselect = baseVerbSets;
-                else if (type === 'nouns') setsToDeselect = baseNounSets;
-                else setsToDeselect = basePhraseSets;
+            const handleShuffle = () => { setShuffledCards(shuffle(activeCards)); setCurrentIndex(0); setIsFlipped(false); };
+            const handleModeToggle = () => { setMode(prev => prev === 'spanish-to-english' ? 'english-to-spanish' : 'spanish-to-english'); setIsFlipped(false); };
+            const handleKeyPress = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(); } };
 
-                const updatedSets = { ...activeSets };
-                Object.keys(setsToDeselect).forEach(setName => { updatedSets[setName] = false; });
-                setActiveSets(updatedSets);
-            };
-
-            // --- Touch Handlers for Tap/Swipe ---
             const minSwipeDistance = 50;
-            const onTouchStart = (e) => {
-                setTouchEnd(null);
-                setTouchStart(e.targetTouches[0].clientX);
-            };
-            const onTouchMove = (e) => {
-                setTouchEnd(e.targetTouches[0].clientX);
-            };
+            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
+            const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
             const onTouchEnd = (e) => {
                 if (!touchStart) return;
-
                 const isSwipe = touchEnd && Math.abs(touchStart - touchEnd) > minSwipeDistance;
-
                 if (isSwipe) {
-                    const distance = touchStart - touchEnd;
-                    if (distance > 0) { // Swiped left
-                        handleNext();
-                    } else { // Swiped right
-                        handlePrevious();
-                    }
+                    if (touchStart - touchEnd > 0) handleNext(); else handlePrevious();
                 } else {
-                    // It's a tap. Prevent the delayed onClick and flip immediately.
-                    e.preventDefault();
-                    handleFlip();
+                    e.preventDefault(); handleFlip();
                 }
-
-                // Reset touch state for the next interaction
-                setTouchStart(null);
-                setTouchEnd(null);
+                setTouchStart(null); setTouchEnd(null);
             };
-
 
             // --- RENDER VARIABLES ---
             const currentCard = shuffledCards[currentIndex];
-            const totalStudied = studiedCards.size;
-            const progress = shuffledCards.length > 0 ? ((totalStudied / shuffledCards.length) * 100).toFixed(1) : 0;
+            const rememberedCount = totalPotentialCards.length - activeCards.length;
+            const progress = totalPotentialCards.length > 0 ? ((rememberedCount / totalPotentialCards.length) * 100).toFixed(1) : 0;
 
             const CheckboxGrid = ({ sets, type }) => (
-                 <div className="mb-6 bg-white/50 p-4 rounded-lg border border-gray-200 shadow-sm">
+                <div className="mb-6 bg-white/50 p-4 rounded-lg border border-gray-200 shadow-sm">
                     <div className="flex justify-between items-center mb-3">
-                        <label className="text-sm font-medium text-gray-800">
-                            Choose {type.charAt(0).toUpperCase() + type.slice(1, -1)} Sets:
-                        </label>
+                        <label className="text-sm font-medium text-gray-800">Choose {type.charAt(0).toUpperCase() + type.slice(1, -1)} Sets:</label>
                         <div className="flex gap-2">
-                            <button onClick={() => handleSelectAll(type)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
-                            <button onClick={() => handleDeselectAll(type)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
+                             <button onClick={() => {
+                                const updatedSets = { ...activeSets };
+                                Object.keys(sets).forEach(setName => { updatedSets[setName] = true; });
+                                setActiveSets(updatedSets);
+                             }} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Select All</button>
+                             <button onClick={() => {
+                                const updatedSets = { ...activeSets };
+                                Object.keys(sets).forEach(setName => { if (updatedSets[setName]) handleSetToggle(setName); });
+                             }} className="text-xs font-medium text-indigo-600 hover:text-indigo-800">Deselect All</button>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                         {Object.keys(sets).map((setName) => (
                             <label key={setName} className="flex items-center space-x-2 cursor-pointer p-2 rounded-md hover:bg-indigo-100/50">
-                                <input
-                                    type="checkbox"
-                                    checked={!!activeSets[setName]}
-                                    onChange={() => handleSetToggle(setName)}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                />
+                                <input type="checkbox" checked={!!activeSets[setName]} onChange={() => handleSetToggle(setName)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"/>
                                 <span className="text-sm text-gray-700 select-none">{setName}</span>
                             </label>
                         ))}
@@ -313,69 +308,37 @@
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex flex-col">
                     <div className="max-w-md mx-auto w-full flex flex-col flex-grow">
-                        {/* Header */}
                         <header className="text-center mb-6">
-                            <div className="flex items-center justify-center gap-2 mb-2">
-                                <BookIcon />
-                                <h1 className="text-2xl font-bold text-gray-800">Spanish Flashcards</h1>
-                            </div>
-                            <p className="text-sm text-gray-600">Select categories of verbs, nouns, and phrases to study</p>
+                            <div className="flex items-center justify-center gap-2 mb-2"><BookIcon /><h1 className="text-2xl font-bold text-gray-800">Spanish Flashcards</h1></div>
+                            <p className="text-sm text-gray-600">Select categories to build your study deck</p>
                         </header>
 
-                        {/* Progress Bar & Top Controls */}
                         <div className="mb-4">
-                            <div className="flex justify-between text-sm text-gray-600 mb-1">
-                                <span>Progress</span>
-                                <span>{totalStudied}/{shuffledCards.length} ({progress}%)</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
-                            </div>
+                            <div className="flex justify-between text-sm text-gray-600 mb-1"><span>Mastery Progress</span><span>{rememberedCount}/{totalPotentialCards.length} ({progress}%)</span></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div></div>
                         </div>
                         <div className="flex justify-between items-center mb-6">
-                            <button onClick={handleModeToggle} className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                {mode === 'spanish-to-english' ? 'ES → EN' : 'EN → ES'}
-                            </button>
-                            <div className="text-sm text-gray-600" aria-live="polite">{shuffledCards.length > 0 ? `${currentIndex + 1} / ${shuffledCards.length}` : '0 / 0'}</div>
+                            <button onClick={handleModeToggle} className="px-3 py-2 bg-white rounded-lg shadow-sm border text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">{mode === 'spanish-to-english' ? 'ES → EN' : 'EN → ES'}</button>
+                            <div className="text-sm font-medium text-gray-600" aria-live="polite">{shuffledCards.length > 0 ? `Card ${currentIndex + 1} / ${shuffledCards.length}` : 'Deck Empty'}</div>
                             <button onClick={handleShuffle} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Shuffle deck"><ShuffleIcon /></button>
                         </div>
 
-                        {/* Flashcard */}
-                        <div 
-                            className="relative w-full h-80 cursor-pointer perspective-1000"
-                            onClick={handleFlip}
-                            onTouchStart={onTouchStart}
-                            onTouchMove={onTouchMove}
-                            onTouchEnd={onTouchEnd}
-                            onKeyPress={handleKeyPress}
-                            role="button" 
-                            tabIndex="0" 
-                            aria-label="Flashcard"
-                        >
+                        <div className="relative w-full h-80 cursor-pointer perspective-1000" onClick={handleFlip} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} onKeyPress={handleKeyPress} role="button" tabIndex="0" aria-label="Flashcard">
                             {currentCard ? (
                                 <div className={`absolute inset-0 w-full h-full transition-transform duration-500 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                                    {/* Front */}
                                     <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-indigo-100 backface-hidden flex flex-col items-center justify-center p-4">
                                         <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">{mode === 'spanish-to-english' ? 'Español' : 'English'}</div>
                                         <div className={`font-bold text-gray-800 text-center ${currentCard.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? currentCard.spanish : currentCard.english}</div>
                                         <div className="absolute bottom-4 text-xs text-gray-400 mt-4">Tap or swipe</div>
                                     </div>
-                                    
-                                    {/* Back */}
                                     <div className="absolute inset-0 w-full h-full bg-indigo-50 rounded-xl shadow-lg border-2 border-indigo-200 backface-hidden rotate-y-180 flex flex-col items-center justify-center p-4">
                                         <div className="text-xs uppercase tracking-wide text-indigo-600 mb-2">{mode === 'spanish-to-english' ? 'English' : 'Español'}</div>
                                         <div className={`font-bold text-indigo-800 text-center mb-4 ${currentCard.type === 'phrase' ? 'text-2xl' : 'text-4xl'}`}>{mode === 'spanish-to-english' ? currentCard.english : currentCard.spanish}</div>
-                                        
                                         {currentCard.type === 'verb' && (
                                             <div className="w-full max-w-xs">
                                                 <div className="text-xs text-indigo-600 text-center mb-2">Present Tense Conjugations</div>
                                                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                                                    {[ "yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas" ].map((pronoun, i) => (
-                                                        <React.Fragment key={pronoun}>
-                                                            <div className="text-right text-indigo-700">{pronoun}</div>
-                                                            <div className="font-medium text-indigo-900">{currentCard.conjugations[i]}</div>
-                                                        </React.Fragment>
-                                                    ))}
+                                                    {["yo","tú","él/ella","nosotros","vosotros","ellos/ellas"].map((p, i) => <React.Fragment key={p}><div className="text-right text-indigo-700">{p}</div><div className="font-medium text-indigo-900">{currentCard.conjugations[i]}</div></React.Fragment>)}
                                                 </div>
                                             </div>
                                         )}
@@ -383,27 +346,27 @@
                                     </div>
                                 </div>
                             ) : (
-                                <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center p-4">
-                                    <div className="text-lg text-gray-600 font-medium">No card sets selected.</div>
-                                    <div className="text-sm text-gray-500 mt-2">Use the tabs below to select one or more sets.</div>
+                                <div className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-lg border-2 border-gray-200 flex flex-col items-center justify-center p-4 text-center">
+                                    <div className="text-lg text-gray-600 font-medium">{totalPotentialCards.length > 0 ? "You've remembered all the cards!" : "No card sets selected."}</div>
+                                    <div className="text-sm text-gray-500 mt-2">{totalPotentialCards.length > 0 ? "Deselect this category or hit Reset to study them again." : "Use the tabs below to select one or more sets."}</div>
                                 </div>
                             )}
                         </div>
                         
-                        {/* Navigation */}
                         <div className="flex justify-between items-center mb-6 mt-4">
                             <button onClick={handlePrevious} disabled={currentIndex === 0 || shuffledCards.length === 0} className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"><ChevronLeftIcon />Previous</button>
                             <div className="flex items-center gap-2">
-                                <button onClick={resetDeck} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Reset to beginning" aria-label="Reset deck to beginning"><RefreshIcon /></button>
+                                <button onClick={resetDeck} disabled={totalPotentialCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Reset Remembered Cards" aria-label="Reset deck"><RefreshIcon /></button>
                                 <button onClick={handleSpeakerClick} disabled={shuffledCards.length === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Play audio" aria-label="Play audio"><SpeakerIcon /></button>
                             </div>
-                            <button onClick={handleNext} disabled={shuffledCards.length === 0 || currentIndex === shuffledCards.length - 1} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors">Next<ChevronRightIcon /></button>
+                            <div className="flex items-center gap-2">
+                                <button onClick={handleMarkRemembered} disabled={shuffledCards.length === 0} className="flex items-center gap-2 px-3 py-2 bg-white text-green-600 rounded-lg shadow-sm border border-green-200 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="I know this card"><CheckIcon/> Known</button>
+                                <button onClick={handleNext} disabled={shuffledCards.length === 0 || currentIndex === shuffledCards.length - 1} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors">Next<ChevronRightIcon /></button>
+                            </div>
                         </div>
 
-                        {/* Pushes content above it up */}
                         <div className="flex-grow"></div>
 
-                        {/* --- TABS and SELECTION AREA --- */}
                         <div>
                             <div className="border-b border-gray-200">
                                 <nav className="-mb-px flex justify-center gap-6" aria-label="Tabs">
@@ -418,7 +381,6 @@
                                 {activeTab === 'phrases' && <CheckboxGrid sets={basePhraseSets} type="phrases" />}
                             </div>
                         </div>
-
                     </div>
                 </div>
             );
