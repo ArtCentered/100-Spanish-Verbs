@@ -118,6 +118,7 @@
             const [studiedCards, setStudiedCards] = useState(new Set());
             const [touchStart, setTouchStart] = useState(null);
             const [touchEnd, setTouchEnd] = useState(null);
+            const [voices, setVoices] = useState([]);
 
             // --- MEMOIZED CALCULATIONS ---
             const activeCards = useMemo(() => {
@@ -153,26 +154,42 @@
                 return newArray;
             };
 
-            // UPDATED: More robust audio function for iOS
             const speakText = (text, lang = 'es-ES') => {
                 if (!('speechSynthesis' in window)) {
                     console.log("Speech synthesis not supported.");
                     return;
                 }
-                // Cancel any ongoing or queued speech to prevent conflicts on iOS
                 window.speechSynthesis.cancel();
                 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = lang;
                 utterance.rate = 0.8; 
                 
-                // Add a small delay before speaking, which can help on some mobile browsers
+                // --- VOICE SELECTION LOGIC FOR iOS ---
+                const spanishVoice = voices.find(voice => voice.lang === 'es-ES') || voices.find(voice => voice.lang.startsWith('es-'));
+                if (spanishVoice) {
+                    utterance.voice = spanishVoice;
+                }
+                // --- END OF VOICE SELECTION LOGIC ---
+
                 setTimeout(() => {
                     window.speechSynthesis.speak(utterance);
                 }, 100);
             };
 
             // --- EFFECTS ---
+            useEffect(() => {
+                const loadVoices = () => {
+                    setVoices(window.speechSynthesis.getVoices());
+                };
+                // The voices are loaded asynchronously. We need to listen for the 'voiceschanged' event.
+                if ('onvoiceschanged' in window.speechSynthesis) {
+                    window.speechSynthesis.onvoiceschanged = loadVoices;
+                }
+                // Also call it directly in case the voices are already loaded.
+                loadVoices();
+            }, []);
+
             useEffect(() => {
                 setShuffledCards(shuffle(activeCards));
                 setCurrentIndex(0);
