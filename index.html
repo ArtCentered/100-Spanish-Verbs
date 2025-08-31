@@ -141,7 +141,7 @@
                 <div className="flex items-center gap-2">
                     <button onClick={handlers.resetDeckProgress} disabled={state.totalPotentialCards === 0} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Reset Progress for Selected Sets" aria-label="Reset deck progress"><RefreshIcon /></button>
                     <button onClick={handlers.handleSpeakerClick} disabled={!state.isCardPresent} className="p-2 bg-white rounded-lg shadow-sm border hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Play audio" aria-label="Play audio"><SpeakerIcon /></button>
-                    <button onClick={handlers.handleToggleRemembered} disabled={!state.isCardPresent} className={`p-2 rounded-lg shadow-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${state.isRemembered ? 'bg-green-500 text-white border-green-600 hover:bg-green-600' : 'bg-white text-gray-600 hover:bg-gray-50'}`} title={state.isRemembered ? "Mark as not known" : "Mark as known"}><CheckIcon /></button>
+                    <button onClick={handlers.handleToggleRemembered} disabled={!state.isCardPresent || state.isAnimating} className={`p-2 rounded-lg shadow-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${state.isRemembered ? 'bg-green-500 text-white border-green-600 hover:bg-green-600' : 'bg-white text-gray-600 hover:bg-gray-50'}`} title={state.isRemembered ? "Mark as not known" : "Mark as known"}><CheckIcon /></button>
                 </div>
                 <button onClick={handlers.handleNext} disabled={state.deckSize < 2 || state.isAnimating} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors text-sm">Next<ChevronRightIcon /></button>
             </div>
@@ -310,28 +310,49 @@
             
             const handleToggleRemembered = () => {
                 const currentCard = shuffledCards[currentIndex];
-                if (!currentCard) return;
-            
+                // Guard against clicks when there's no card or an animation is in progress
+                if (!currentCard || isAnimating) return;
+
                 const isAlreadyRemembered = rememberedCards.has(currentCard.spanish);
-            
-                setIsFlipped(false); 
-            
-                setRememberedCards(prev => {
-                    const newSet = new Set(prev);
-                    if (isAlreadyRemembered) {
-                        newSet.delete(currentCard.spanish);
-                    } else {
-                        newSet.add(currentCard.spanish);
-                    }
-                    return newSet;
-                });
-            
-                if (!isAlreadyRemembered) {
-                    setShuffledCards(prevCards => {
-                        const newCards = prevCards.filter(card => card.spanish !== currentCard.spanish);
-                        setCurrentIndex(prevIndex => Math.min(prevIndex, newCards.length > 0 ? newCards.length - 1 : 0));
-                        return newCards;
+
+                // This function contains the logic to update the deck
+                const performUpdate = () => {
+                    setRememberedCards(prev => {
+                        const newSet = new Set(prev);
+                        if (isAlreadyRemembered) {
+                            newSet.delete(currentCard.spanish);
+                        } else {
+                            newSet.add(currentCard.spanish);
+                        }
+                        return newSet;
                     });
+            
+                    // Only remove the card from the visible deck if it's being newly remembered
+                    if (!isAlreadyRemembered) {
+                        setShuffledCards(prevCards => {
+                            const newCards = prevCards.filter(card => card.spanish !== currentCard.spanish);
+                            setCurrentIndex(prevIndex => Math.min(prevIndex, newCards.length > 0 ? newCards.length - 1 : 0));
+                            return newCards;
+                        });
+                    }
+                };
+                
+                // Check if we are remembering a card (not un-remembering) and if it's currently flipped
+                if (isFlipped && !isAlreadyRemembered) {
+                    // If so, start the flip-back animation first
+                    setIsAnimating(true);
+                    setIsFlipped(false);
+                    
+                    // After the animation duration, perform the deck update
+                    setTimeout(() => {
+                        performUpdate();
+                        setIsAnimating(false);
+                    }, FLIP_ANIMATION_DURATION);
+                } else {
+                    // Otherwise (if card is not flipped or is being un-remembered), update immediately
+                    // and ensure the next card starts on the front.
+                    setIsFlipped(false);
+                    performUpdate();
                 }
             };
 
